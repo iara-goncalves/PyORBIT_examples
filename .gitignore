@@ -50,3 +50,14 @@ docs/_build
 dist/
 pyorbit.egg-info/
 pyorbit_package.egg-info/
+
+# Ignore data files
+*.p
+
+# Optional: Also ignore common Python/data science files
+*.pyc
+__pycache__/
+*.pkl
+*.pickle
+.DS_Store
+.dat
