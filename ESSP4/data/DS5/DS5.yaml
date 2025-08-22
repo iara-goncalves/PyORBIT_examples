@@ -19,6 +19,7 @@ common:
   planets:
     b:
       orbit: keplerian
+      parametrization: Eastman2013
       boundaries:
         P: [2.0, 100.0]
         K: [0.001, 10.0]

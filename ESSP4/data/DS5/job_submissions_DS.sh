@@ -5,7 +5,7 @@
 ### -- set the job Name -- 
 #BSUB -J DS5_iara
 ### -- ask for number of cores (default: 1) -- 
-#BSUB -n 4
+#BSUB -n 16
 ### -- specify that the cores must be on the same host -- 
 #BSUB -R "span[hosts=1]"
 ### -- specify that we need 4GB of memory per core/slot -- 
@@ -26,7 +26,7 @@
 ### -- -o and -e mean append, -oo and -eo mean overwrite -- 
 #BSUB -o Output_DS5.out 
 
-cd /work2/lbuc/iara/GitHub/PyORBIT_examples/ESSP4/data
+cd /work2/lbuc/iara/GitHub/PyORBIT_examples/ESSP4/data/DS5
 
 source /work2/lbuc/iara/anaconda3/etc/profile.d/conda.sh
 conda activate pyorbit
