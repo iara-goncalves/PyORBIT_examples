@@ -21,7 +21,7 @@ common:
       orbit: keplerian
       parametrization: Eastman2013
       boundaries:
-        P: [2.0, 100.0]
+        P: [1.0, 100.0]
         K: [0.001, 10.0]
         e: [0.00, 0.70]
       priors:
@@ -51,8 +51,8 @@ models:
     hyperparameters_condition: True
     rotation_decay_condition: True
     RVdata:
-      boundaries:
-        rot_amp: [0.0, 10.0] #at least one must be positive definite
+      boundaries: #at least one must be positive definite
+        rot_amp: [0.0, 10.0]
         con_amp: [-20.0, 20.0]
       derivative: True
     BISdata:
@@ -62,7 +62,7 @@ models:
       derivative: True
     FWHMdata:
       boundaries:
-        con_amp: [-20., 20.]
+        con_amp: [-30., 30.]
       derivative: False
 parameters:
   Tref: 59334.700184
