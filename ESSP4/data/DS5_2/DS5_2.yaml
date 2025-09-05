@@ -15,13 +15,23 @@ inputs:
     kind: FWHM
     models:
       - gp_multidimensional
+  Halphadata:
+    file: DS5_Halpha.dat
+    kind: Halpha
+    models:
+      - gp_multidimensional
+  Ca2data:
+    file: DS5_CaII.dat
+    kind: CaII
+    models:
+      - gp_multidimensional
 common:
   planets:
     b:
       orbit: keplerian
       parametrization: Eastman2013
       boundaries:
-        P: [2.0, 100.0]
+        P: [1.0, 100.0]
         K: [0.001, 10.0]
         e: [0.00, 0.70]
       priors:
@@ -72,8 +82,19 @@ models:
       derivative: True
     FWHMdata:
       boundaries:
+        rot_amp: [-10.0, 10.0]
         con_amp: [-20., 20.]
-      derivative: False
+      derivative: True
+    Halphadata:
+      boundaries:
+        rot_amp: [-10.0, 10.0]
+        con_amp: [-20., 20.]
+      derivative: True
+    Ca2data:
+      boundaries:
+        rot_amp: [-10.0, 10.0]
+        con_amp: [-20., 20.]
+      derivative: True
 parameters:
   Tref: 59334.700184
   low_ram_plot: True
