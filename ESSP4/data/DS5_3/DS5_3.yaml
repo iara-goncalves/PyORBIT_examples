@@ -1,0 +1,127 @@
+inputs:
+  RVdata:
+    file: DS5_RV.dat
+    kind: RV
+    models:
+      - radial_velocities
+      - gp_multidimensional
+  BISdata:
+    file: DS5_BIS.dat
+    kind: BIS
+    models:
+      - gp_multidimensional
+  FWHMdata:
+    file: DS5_FWHM.dat
+    kind: FWHM
+    models:
+      - gp_multidimensional
+  Halphadata:
+    file: DS5_Halpha.dat
+    kind: Halpha
+    models:
+      - gp_multidimensional
+  Ca2data:
+    file: DS5_CaII.dat
+    kind: CaII
+    models:
+      - gp_multidimensional
+common:
+  planets:
+    b:
+      orbit: keplerian
+      parametrization: Eastman2013
+      boundaries:
+        P: [1.0, 100.0]
+        K: [0.001, 10.0]
+        e: [0.00, 0.70]
+      priors:
+        e: ['Gaussian', 0.00, 0.098]
+    c:
+      orbit: keplerian
+      parametrization: Eastman2013
+      boundaries:
+        P: [2.0, 100.0]
+        K: [0.001, 10.0]
+        e: [0.00, 0.70]
+      priors:
+        e: ['Gaussian', 0.00, 0.098]
+    d:
+      orbit: keplerian
+      parametrization: Eastman2013
+      boundaries:
+        P: [2.0, 100.0]
+        K: [0.001, 10.0]
+        e: [0.00, 0.70]
+      priors:
+        e: ['Gaussian', 0.00, 0.098]
+  activity:
+    boundaries:
+      Prot: [20.0, 35.0]
+      Pdec: [30.0, 1000.0]
+      Oamp: [0.01, 1.0]
+    priors:
+      Prot: ['Gaussian', 28.00, 0.50]
+      Oamp: ['Gaussian', 0.35, 0.035]
+  star:
+    star_parameters:
+      priors:
+        mass: ['Gaussian', 1, 0.000001]
+        radius: ['Gaussian', 1, 0.000001]
+        density: ['Gaussian', 1, 0.000001]
+models:
+  radial_velocities:
+    planets:
+      - b
+      - c
+      - d
+  gp_multidimensional:
+    model: spleaf_multidimensional_esp
+    common: activity
+    n_harmonics: 4
+    hyperparameters_condition: True
+    rotation_decay_condition: True
+    RVdata:
+      boundaries:
+        rot_amp: [0.0, 10.0] #at least one must be positive definite
+        con_amp: [-20.0, 20.0]
+      derivative: True
+    BISdata:
+      boundaries:
+        rot_amp: [-10.0, 10.0]
+        con_amp: [-20.0, 20.0]
+      derivative: True
+    FWHMdata:
+      boundaries:
+        rot_amp: [-10.0, 10.0]
+        con_amp: [-20., 20.]
+      derivative: True
+    Halphadata:
+      boundaries:
+        rot_amp: [-10.0, 10.0]
+        con_amp: [-20., 20.]
+      derivative: True
+    Ca2data:
+      boundaries:
+        rot_amp: [-10.0, 10.0]
+        con_amp: [-20., 20.]
+      derivative: True
+parameters:
+  Tref: 59334.700184
+  low_ram_plot: True
+  plot_split_threshold: 1000
+  cpu_threads: 16
+solver:
+  pyde:
+    ngen: 50000
+    npop_mult: 4
+  emcee:
+    npop_mult: 4
+    nsteps: 100000
+    nburn: 25000
+    nsave: 25000
+    thin: 100
+    #use_threading_pool: False
+  nested_sampling:
+    nlive: 1000
+    sampling_efficiency: 0.30
+  recenter_bounds: True
