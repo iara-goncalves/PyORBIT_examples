@@ -36,4 +36,7 @@ conda activate pyorbit
 pyorbit_run emcee DS5_3.yaml  >  configuration_file_emcee_run_DS5_3.log
 pyorbit_results emcee DS5_3.yaml -all >> configuration_file_emcee_run_DS5_3.log
 
+cp DS5_3.yaml ./DS5_3
+cp configuration_file_emcee_run_DS5_3.log ./DS5_3
+
 conda deactivate
