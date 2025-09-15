@@ -7,7 +7,7 @@
 # Define arrays
 datasets=(DS1 DS2 DS3 DS4 DS5 DS6 DS7 DS8 DS9)
 planets=(1p 2p 3p)
-activities=(2activity_indi 4activity_indi)
+activities=(2activity_indi 4activity_indi CCFs)
 
 # Base directory - pointing from scripts/ to data/
 base_dir="../data"
@@ -24,7 +24,7 @@ echo "PyORBIT Complete Setup Generator"
 echo "=================================="
 echo "Datasets: ${#datasets[@]} (DS1-DS9)"
 echo "Planets: ${#planets[@]} (1p, 2p, 3p)"
-echo "Activities: ${#activities[@]} (2activity_indi, 4activity_indi)"
+echo "Activities: ${#activities[@]} (2activity_indi, 4activity_indi, CCFs)"
 echo "Base directory: $base_dir"
 echo ""
 
@@ -66,99 +66,141 @@ for dataset in "${datasets[@]}"; do
                 "3p") num_planets=3 ;;
             esac
             
-            # Determine activity indicators
+            # Determine activity indicators based on activity type
             if [[ $activity == "2activity_indi" ]]; then
-                activity_inputs="BIS FWHM"
-            else
-                activity_inputs="BIS FWHM CaII Halpha"
+                activity_indicators=("BIS" "FWHM")
+            elif [[ $activity == "4activity_indi" ]]; then
+                activity_indicators=("BIS" "FWHM" "CaII" "Halpha")
+            elif [[ $activity == "CCFs" ]]; then
+                activity_indicators=("FWHM" "Contrast")
             fi
             
             # Generate YAML configuration
             cat > "$yaml_file" << EOF
-# PyORBIT Configuration for ${dataset}_${planet}_${activity}
-# Generated automatically on $(date)
-
 inputs:
-  # Radial velocity data
-  RV:
+  RVdata:
     file: ../../../${dataset}_RV.dat
+    kind: RV
     models:
       - radial_velocities
+      - gp_multidimensional
 EOF
 
             # Add activity indicator inputs
-            for indicator in $activity_inputs; do
+            for indicator in "${activity_indicators[@]}"; do
                 cat >> "$yaml_file" << EOF
-  
-  ${indicator}:
+  ${indicator}data:
     file: ../../../${dataset}_${indicator}.dat
+    kind: ${indicator}
     models:
-      - activity_indicators
+      - gp_multidimensional
 EOF
             done
 
-            # Add models section
+            # Add common section
             cat >> "$yaml_file" << EOF
+
+common:
+  planets:
+EOF
+
+            # Add planet configurations
+            planet_letters=("b" "c" "d")  # Standard planet naming
+            for ((p=0; p<num_planets; p++)); do
+                planet_letter=${planet_letters[$p]}
+                cat >> "$yaml_file" << EOF
+    ${planet_letter}:
+      orbit: keplerian
+      parametrization: Eastman2013
+      boundaries:
+        P: [1.0, 100.0]
+        K: [0.001, 10.0]
+        e: [0.00, 0.70]
+      priors:
+        e: ['Gaussian', 0.00, 0.098]
+EOF
+            done
+
+            # Add activity section
+            cat >> "$yaml_file" << EOF
+  activity:
+    boundaries:
+      Prot: [20.0, 35.0]
+      Pdec: [30.0, 1000.0]
+      Oamp: [0.01, 1.0]
+    priors:
+      Prot: ['Gaussian', 28.00, 0.50]
+      Oamp: ['Gaussian', 0.35, 0.035]
+  star:
+    star_parameters:
+      priors:
+        mass: ['Gaussian', 1, 0.000001]
+        radius: ['Gaussian', 1, 0.000001]
+        density: ['Gaussian', 1, 0.000001]
 
 models:
   radial_velocities:
     planets:
 EOF
 
-            # Add planet configurations
-            for ((p=1; p<=num_planets; p++)); do
+            # Add planet list for radial_velocities model
+            for ((p=0; p<num_planets; p++)); do
+                planet_letter=${planet_letters[$p]}
                 cat >> "$yaml_file" << EOF
-      planet_${p}:
-        orbit: keplerian
-        parametrization: Tc P e w K
-        boundaries:
-          P: [1.0, 1000.0]
-          K: [0.1, 100.0]
-          e: [0.0, 0.9]
-          w: [0.0, 360.0]
-          Tc: [2450000.0, 2470000.0]
-        priors:
-          P: ['Uniform', 1.0, 1000.0]
-          K: ['Uniform', 0.1, 100.0]
-          e: ['Uniform', 0.0, 0.9]
-          w: ['Uniform', 0.0, 360.0]
-          Tc: ['Uniform', 2450000.0, 2470000.0]
+      - ${planet_letter}
 EOF
             done
 
-            # Add activity indicators model
+            # Add GP multidimensional model
+            cat >> "$yaml_file" << EOF
+  gp_multidimensional:
+    model: spleaf_multidimensional_esp
+    common: activity
+    n_harmonics: 4
+    hyperparameters_condition: True
+    rotation_decay_condition: True
+    RVdata:
+      boundaries:
+        rot_amp: [0.0, 10.0] #at least one must be positive definite
+        con_amp: [-20.0, 20.0]
+      derivative: True
+EOF
+
+            # Add activity indicator configurations for GP model
+            for indicator in "${activity_indicators[@]}"; do
+                cat >> "$yaml_file" << EOF
+    ${indicator}data:
+      boundaries:
+        rot_amp: [-10.0, 10.0]
+        con_amp: [-20.0, 20.0]
+      derivative: True
+EOF
+            done
+
+            # Add parameters and solver sections
             cat >> "$yaml_file" << EOF
 
-  activity_indicators:
-    model_class: polynomial_trend
-    order: 1
-    boundaries:
-      offset: [-100.0, 100.0]
-      slope: [-10.0, 10.0]
-    priors:
-      offset: ['Uniform', -100.0, 100.0]
-      slope: ['Uniform', -10.0, 10.0]
-
 parameters:
-  star_mass: [1.0, 0.1]  # Solar masses
-  star_radius: [1.0, 0.1]  # Solar radii
+  Tref: 59334.700184
+  low_ram_plot: True
+  plot_split_threshold: 1000
+  cpu_threads: 16
 
 solver:
   pyde:
     ngen: 50000
     npop_mult: 4
-    
   emcee:
     npop_mult: 4
-    nsteps: 50000
+    nsteps: 100000
     nburn: 25000
     nsave: 25000
-
-output:
-  overwrite: True
-  plots: True
-  return_output: False
-  output_name: ${dataset}_${planet}_${activity}_results
+    thin: 100
+    #use_threading_pool: False
+  nested_sampling:
+    nlive: 1000
+    sampling_efficiency: 0.30
+  recenter_bounds: True
 EOF
 
             ((yaml_count++))
@@ -273,13 +315,13 @@ bjobs
 
 echo ""
 echo "PyORBIT jobs:"
-bjobs | grep -E "(DS[1-9]_[1-3]p_[24]activity)"
+bjobs | grep -E "(DS[1-9]_[1-3]p_(2activity|4activity|CCFs))"
 
 echo ""
 echo "Job summary:"
-total_jobs=$(bjobs | grep -c -E "(DS[1-9]_[1-3]p_[24]activity)")
-running_jobs=$(bjobs | grep RUN | grep -c -E "(DS[1-9]_[1-3]p_[24]activity)")
-pending_jobs=$(bjobs | grep PEND | grep -c -E "(DS[1-9]_[1-3]p_[24]activity)")
+total_jobs=$(bjobs | grep -c -E "(DS[1-9]_[1-3]p_(2activity|4activity|CCFs))")
+running_jobs=$(bjobs | grep RUN | grep -c -E "(DS[1-9]_[1-3]p_(2activity|4activity|CCFs))")
+pending_jobs=$(bjobs | grep PEND | grep -c -E "(DS[1-9]_[1-3]p_(2activity|4activity|CCFs))")
 
 echo "Total PyORBIT jobs: $total_jobs"
 echo "Running: $running_jobs"
@@ -296,7 +338,7 @@ cat > "cancel_all_jobs.sh" << 'EOF'
 echo "Canceling all PyORBIT jobs..."
 echo "============================="
 
-job_ids=$(bjobs | grep -E "(DS[1-9]_[1-3]p_[24]activity)" | awk '{print $1}')
+job_ids=$(bjobs | grep -E "(DS[1-9]_[1-3]p_(2activity|4activity|CCFs))" | awk '{print $1}')
 
 if [ -z "$job_ids" ]; then
     echo "No PyORBIT jobs found to cancel."
@@ -346,6 +388,8 @@ done
 echo ""
 echo "Next steps:"
 echo "1. Review YAML configurations if needed"
-echo "2. Test with one job first: bsub < run_DS1_1p_2activity_indi.sh"
+echo "2. Test with one job first: bsub < run_DS1_1p_CCFs.sh"
 echo "3. Submit all jobs: ./submit_all_jobs.sh"
 echo "4. Monitor progress: ./monitor_jobs.sh"
+echo ""
+echo "Total jobs will be: 81 (9 datasets × 3 planets × 3 activity combinations)"
