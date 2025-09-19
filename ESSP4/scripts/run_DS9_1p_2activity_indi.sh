@@ -14,8 +14,6 @@
 #BSUB -M 5GB
 ### -- set walltime limit: hh:mm -- 
 #BSUB -W 24:00
-### -- set the email address -- 
-#BSUB -u icogo@dtu.dk
 ### -- send notification at start -- 
 #BSUB -B 
 ### -- send notification at completion -- 

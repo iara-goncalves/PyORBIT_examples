@@ -3,7 +3,7 @@
 echo "Canceling all PyORBIT jobs..."
 echo "============================="
 
-job_ids=$(bjobs | grep -E "(DS[1-9]_[1-3]p_(2activity|4activity|CCFs))" | awk '{print $1}')
+job_ids=$(bjobs | grep -E "(DS[1-9]_[1-3]p_(2activity|4activity|5activity|CCFs|white_noise))" | awk '{print $1}')
 
 if [ -z "$job_ids" ]; then
     echo "No PyORBIT jobs found to cancel."
