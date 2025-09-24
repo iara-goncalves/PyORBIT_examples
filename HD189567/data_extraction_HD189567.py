@@ -131,7 +131,7 @@ def calculate_error_ratios(espresso_files):
         print(f"Error calculating ratios: {e}")
         return {'fwhm_ratio': 1.0, 'contrast_ratio': 1.0, 'bis_ratio': 1.0}
 
-def identify_outliers(data, sigma_threshold=4):
+def identify_outliers(data, sigma_threshold=3):
     """
     Identify outliers using sigma clipping
     """
@@ -140,26 +140,130 @@ def identify_outliers(data, sigma_threshold=4):
     outliers = np.abs(data - mean) > sigma_threshold * std
     return outliers
 
-def identify_outliers_by_dates(df, sigma_threshold=4):
+def identify_outliers_by_dates(df, sigma_threshold=3):
     """
-    Identify outlier dates based on RV data that should be excluded from ALL indicators
-    Returns a set of BJD dates to exclude
+    Identify outlier dates using the same method as your ESSP code:
+    - Use median instead of mean
+    - Use standard deviation (ddof=1)
+    - Accumulate outliers across ALL activity indicators
+    - Return dates to exclude from ALL indicators
     """
-    # Use RV data to identify outlier dates
-    rv_data = df.dropna(subset=['BJD', 'RV', 'RV_ERROR'])
+    # Columns to test for outliers (matching your approach)
+    cols_to_clip = ['RV', 'CCF_FWHM', 'CCF_CONTRAST', 'CCF_BIS']
     
-    if len(rv_data) > 0:
-        # Use your existing identify_outliers function
-        outliers_mask = identify_outliers(rv_data['RV'].values, sigma_threshold)
-        outlier_dates = set(rv_data[outliers_mask]['BJD'].values)
-        return outlier_dates
+    # Initialize outlier mask - use pandas Series to maintain index alignment
+    outlier_mask = pd.Series(False, index=df.index)
+    
+    print(f"\n{'='*60}")
+    print(f"OUTLIER DETECTION (sigma_threshold={sigma_threshold})")
+    print(f"{'='*60}")
+    
+    outliers_by_column = {}  # Track outliers found in each column
+    
+    # Check each column and accumulate outliers
+    for col in cols_to_clip:
+        if col not in df.columns:
+            print(f"  ❌ Column {col} not found, skipping")
+            continue
+            
+        # Get non-null values for statistics calculation
+        valid_data = df[col].dropna()
+        if len(valid_data) == 0:
+            print(f"  ❌ Column {col} has no valid data, skipping")
+            continue
+            
+        # Use median and std (matching your code exactly)
+        median = valid_data.median()
+        std = valid_data.std(ddof=1)  # ddof=1 matches your code
+        
+        if std == 0 or np.isnan(std):
+            print(f"  ❌ Column {col} has zero or NaN std, skipping")
+            continue
+            
+        # Find outliers for this column - use the full df[col] to maintain index alignment
+        col_outliers = (np.abs(df[col] - median) > (sigma_threshold * std))
+        
+        # Get outlier information for this column
+        col_outlier_indices = col_outliers.fillna(False)
+        outliers_in_col = col_outlier_indices.sum()
+        
+        if outliers_in_col > 0:
+            outlier_bjds = df.loc[col_outlier_indices, 'BJD'].values
+            outlier_values = df.loc[col_outlier_indices, col].values
+            outlier_instruments = df.loc[col_outlier_indices, 'instrument'].values
+            
+            outliers_by_column[col] = {
+                'count': outliers_in_col,
+                'bjds': outlier_bjds,
+                'values': outlier_values,
+                'instruments': outlier_instruments
+            }
+            
+            print(f"  📊 Column {col}:")
+            print(f"      Median: {median:.3f}, Std: {std:.3f}")
+            print(f"      Threshold: ±{sigma_threshold * std:.3f}")
+            print(f"      Outliers found: {outliers_in_col}")
+            
+            # Show details of each outlier
+            for j, (bjd, val, inst) in enumerate(zip(outlier_bjds, outlier_values, outlier_instruments)):
+                deviation = abs(val - median) / std
+                print(f"        {j+1}. BJD {bjd:.6f} ({inst}): {val:.3f} ({deviation:.1f}σ)")
+        else:
+            print(f"  ✅ Column {col}: median={median:.3f}, std={std:.3f} - No outliers found")
+        
+        # Accumulate outliers (OR operation, matching your |= operator)
+        outlier_mask = outlier_mask | col_outliers.fillna(False)
+    
+    # Get the BJD dates of outliers
+    outlier_indices = outlier_mask[outlier_mask].index
+    outlier_dates = set(df.loc[outlier_indices, 'BJD'].values)
+    
+    print(f"\n{'='*60}")
+    print(f"OUTLIER SUMMARY")
+    print(f"{'='*60}")
+    
+    if len(outlier_dates) > 0:
+        print(f"🚨 Total unique outlier dates identified: {len(outlier_dates)}")
+        print(f"📅 Outlier BJD dates: {sorted(list(outlier_dates))}")
+        
+        # Show which instruments contributed outliers
+        outlier_instruments = df.loc[outlier_indices, 'instrument'].value_counts()
+        print(f"📡 Outliers by instrument:")
+        for inst, count in outlier_instruments.items():
+            print(f"    {inst}: {count} observations")
+        
+        # Show breakdown by column
+        print(f"📈 Outliers by activity indicator:")
+        for col, info in outliers_by_column.items():
+            print(f"    {col}: {info['count']} outliers")
+        
+        # Show which dates appear as outliers in multiple indicators
+        bjd_counts = {}
+        for col, info in outliers_by_column.items():
+            for bjd in info['bjds']:
+                bjd_counts[bjd] = bjd_counts.get(bjd, 0) + 1
+        
+        multi_indicator_outliers = {bjd: count for bjd, count in bjd_counts.items() if count > 1}
+        if multi_indicator_outliers:
+            print(f"⚠️  Dates flagged as outliers in multiple indicators:")
+            for bjd, count in sorted(multi_indicator_outliers.items()):
+                inst = df[df['BJD'] == bjd]['instrument'].iloc[0]
+                print(f"    BJD {bjd:.6f} ({inst}): flagged in {count} indicators")
     else:
-        return set()
+        print(f"✅ No outliers detected in any activity indicator!")
+        print(f"📊 All {len(df)} observations passed the {sigma_threshold}σ threshold")
+    
+    print(f"{'='*60}\n")
+    
+    return outlier_dates
 
-def save_dat_files(df, output_dir, instrument_name):
+
+
+def save_dat_files(df, output_dir, instrument_name, exclude_outliers=True):
     """
     Save individual .dat files for each activity indicator for a specific instrument
     Format: BJD, value, error, jitter, instrument_flag
+    EXCLUDES OUTLIERS from the saved files
     """
     indicators = {
         'RV': {
@@ -176,44 +280,49 @@ def save_dat_files(df, output_dir, instrument_name):
         }
     }
     
-    sigma_threshold = 4
+    sigma_threshold = 3
     
     # Get instrument-specific data
     instrument_df = df[df['instrument'] == instrument_name].copy()
     
-    # Identify outlier dates based on RV data for this instrument
-    outlier_dates = identify_outliers_by_dates(instrument_df, sigma_threshold)
-    
-    # Filter out outlier dates from the entire instrument dataset
-    instrument_df_clean = instrument_df[~instrument_df['BJD'].isin(outlier_dates)].copy()
-    
-    print(f"\n{instrument_name} outlier removal:")
-    print(f"  - Total observations before filtering: {len(instrument_df)}")
-    print(f"  - Outlier dates identified: {len(outlier_dates)}")
-    print(f"  - Total observations after filtering: {len(instrument_df_clean)}")
-    if len(outlier_dates) > 0:
-        print(f"  - Outlier BJD dates: {sorted(list(outlier_dates))}")
+    if exclude_outliers:
+        # Identify outlier dates using your method
+        outlier_dates = identify_outliers_by_dates(instrument_df, sigma_threshold)
+        
+        # Filter out outlier dates from the entire instrument dataset
+        instrument_df_clean = instrument_df[~instrument_df['BJD'].isin(outlier_dates)].copy()
+        
+        print(f"\n{instrument_name} outlier removal (EXCLUDING outliers from .dat files):")
+        print(f"  - Total observations before filtering: {len(instrument_df)}")
+        print(f"  - Outlier dates identified: {len(outlier_dates)}")
+        print(f"  - Total observations after filtering: {len(instrument_df_clean)}")
+        if len(outlier_dates) > 0:
+            print(f"  - Outlier BJD dates: {sorted(list(outlier_dates))}")
+    else:
+        instrument_df_clean = instrument_df.copy()
+        print(f"\n{instrument_name} - INCLUDING all data (no outlier removal)")
+        print(f"  - Total observations: {len(instrument_df_clean)}")
     
     for indicator, info in indicators.items():
         # Create subset DataFrame for this indicator
         subset_df = instrument_df_clean[info['columns']].copy()
         
-        # Remove rows with NaN values in the main parameter (but keep jitter and instrument_flag)
+        # Remove rows with NaN values in the main parameter
         main_param = info['columns'][1]  # Second column is the main parameter
-        subset_df = subset_df.dropna(subset=[info['columns'][0], main_param, info['columns'][2]])  # BJD, value, error
+        subset_df = subset_df.dropna(subset=[info['columns'][0], main_param, info['columns'][2]])
         
         if len(subset_df) > 0:
             # Save as .dat file
             output_file = os.path.join(output_dir, f"{indicator}.dat")
             
             # Save with tab separation, no header
-            # Format: BJD, value, error, jitter, instrument_flag
             save_data = subset_df.values
             np.savetxt(output_file, save_data, 
                       delimiter='\t', 
                       fmt=['%.6f', '%.6f', '%.6f', '%d', '%d'])
             
-            print(f"Saved {instrument_name} {indicator}.dat with {len(subset_df)} records")
+            status = "INLIERS ONLY" if exclude_outliers else "ALL DATA"
+            print(f"Saved {instrument_name} {indicator}.dat with {len(subset_df)} records ({status})")
             
             # Print instrument flag distribution for HARPS
             if instrument_name == 'HARPS':
@@ -226,10 +335,11 @@ def save_dat_files(df, output_dir, instrument_name):
             print(f"Warning: No valid data for {instrument_name} {indicator}")
 
 
-def save_combined_dat_files(df, output_dir):
+def save_combined_dat_files(df, output_dir, exclude_outliers=True):
     """
     Save combined .dat files with both ESPRESSO and HARPS data
     Format: BJD, value, error, jitter, instrument_flag
+    EXCLUDES OUTLIERS from the saved files
     """
     indicators = {
         'RV': {
@@ -246,20 +356,25 @@ def save_combined_dat_files(df, output_dir):
         }
     }
     
-    sigma_threshold = 4
+    sigma_threshold = 3
     
-    # Identify outlier dates based on RV data from ALL instruments
-    outlier_dates = identify_outliers_by_dates(df, sigma_threshold)
-    
-    # Filter out outlier dates from the entire dataset
-    df_clean = df[~df['BJD'].isin(outlier_dates)].copy()
-    
-    print(f"\nCombined data outlier removal:")
-    print(f"  - Total observations before filtering: {len(df)}")
-    print(f"  - Outlier dates identified: {len(outlier_dates)}")
-    print(f"  - Total observations after filtering: {len(df_clean)}")
-    if len(outlier_dates) > 0:
-        print(f"  - Outlier BJD dates: {sorted(list(outlier_dates))}")
+    if exclude_outliers:
+        # Identify outlier dates using your method on the entire dataset
+        outlier_dates = identify_outliers_by_dates(df, sigma_threshold)
+        
+        # Filter out outlier dates from the entire dataset
+        df_clean = df[~df['BJD'].isin(outlier_dates)].copy()
+        
+        print(f"\nCombined data outlier removal (EXCLUDING outliers from .dat files):")
+        print(f"  - Total observations before filtering: {len(df)}")
+        print(f"  - Outlier dates identified: {len(outlier_dates)}")
+        print(f"  - Total observations after filtering: {len(df_clean)}")
+        if len(outlier_dates) > 0:
+            print(f"  - Outlier BJD dates: {sorted(list(outlier_dates))}")
+    else:
+        df_clean = df.copy()
+        print(f"\nCombined data - INCLUDING all data (no outlier removal)")
+        print(f"  - Total observations: {len(df_clean)}")
     
     for indicator, info in indicators.items():
         # Create combined DataFrame for all instruments
@@ -267,7 +382,7 @@ def save_combined_dat_files(df, output_dir):
         
         # Remove rows with NaN values in the main parameter
         main_param = info['columns'][1]  # Second column is the main parameter
-        combined_df = combined_df.dropna(subset=[info['columns'][0], main_param, info['columns'][2]])  # BJD, value, error
+        combined_df = combined_df.dropna(subset=[info['columns'][0], main_param, info['columns'][2]])
         
         if len(combined_df) > 0:
             # Sort by BJD
@@ -277,13 +392,13 @@ def save_combined_dat_files(df, output_dir):
             output_file = os.path.join(output_dir, f"{indicator}_combined.dat")
             
             # Save with tab separation, no header
-            # Format: BJD, value, error, jitter, instrument_flag
             save_data = combined_df.values
             np.savetxt(output_file, save_data, 
                       delimiter='\t', 
                       fmt=['%.6f', '%.6f', '%.6f', '%d', '%d'])
             
-            print(f"Saved combined {indicator}_combined.dat with {len(combined_df)} records")
+            status = "INLIERS ONLY" if exclude_outliers else "ALL DATA"
+            print(f"Saved combined {indicator}_combined.dat with {len(combined_df)} records ({status})")
             
             # Print instrument flag distribution
             flag_counts = combined_df['instrument_flag'].value_counts().sort_index()
@@ -359,7 +474,7 @@ def load_dat_files(espresso_dir, harps_dir):
     else:
         return pd.DataFrame()
 
-def plot_activity_with_periodograms_combined(df, output_dir, sigma_threshold=4):
+def plot_activity_with_periodograms_combined(df, output_dir, sigma_threshold=3):
     """
     Plot combined ESPRESSO and HARPS activity indicators with Lomb-Scargle periodograms using only inliers.
     Left column: Activity data, Right column: Periodograms
