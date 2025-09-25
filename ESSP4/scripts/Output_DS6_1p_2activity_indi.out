@@ -1459,3 +1459,569 @@ findfont: Font family 'Arial' not found.
   0%|          | 0/39 [00:00<?, ?it/s] 10%|█         | 4/39 [00:00<00:00, 39.00it/s] 23%|██▎       | 9/39 [00:00<00:00, 40.01it/s] 36%|███▌      | 14/39 [00:00<00:00, 41.25it/s] 49%|████▊     | 19/39 [00:00<00:00, 42.20it/s] 62%|██████▏   | 24/39 [00:00<00:00, 42.41it/s] 74%|███████▍  | 29/39 [00:00<00:00, 41.53it/s] 87%|████████▋ | 34/39 [00:00<00:00, 38.95it/s] 95%|█████████▍| 37/39 [00:00<00:00, 38.06it/s]
   0%|          | 0/39 [00:00<?, ?it/s] 10%|█         | 4/39 [00:00<00:00, 39.24it/s] 23%|██▎       | 9/39 [00:00<00:00, 40.19it/s] 36%|███▌      | 14/39 [00:00<00:00, 41.01it/s] 49%|████▊     | 19/39 [00:00<00:00, 42.14it/s] 62%|██████▏   | 24/39 [00:00<00:00, 42.36it/s] 74%|███████▍  | 29/39 [00:00<00:00, 41.46it/s] 87%|████████▋ | 34/39 [00:00<00:00, 38.91it/s] 95%|█████████▍| 37/39 [00:00<00:00, 38.01it/s]
 Job DS6_1p_2activity_indi completed at: Fri Sep 12 19:59:55 CEST 2025
+  0%|          | 0/87000 [00:00<?, ?it/s]  1%|          | 442/87000 [00:00<00:19, 4411.37it/s]  1%|          | 886/87000 [00:00<00:19, 4423.62it/s]  2%|▏         | 1331/87000 [00:00<00:19, 4434.40it/s]  2%|▏         | 1775/87000 [00:00<00:19, 4436.49it/s]  3%|▎         | 2222/87000 [00:00<00:19, 4447.89it/s]  3%|▎         | 2667/87000 [00:00<00:18, 4448.32it/s]  4%|▎         | 3113/87000 [00:00<00:18, 4449.51it/s]  4%|▍         | 3559/87000 [00:00<00:18, 4451.35it/s]  5%|▍         | 4005/87000 [00:00<00:18, 4451.62it/s]  5%|▌         | 4451/87000 [00:01<00:18, 4452.41it/s]  6%|▌         | 4897/87000 [00:01<00:18, 4453.56it/s]  6%|▌         | 5343/87000 [00:01<00:18, 4453.32it/s]  7%|▋         | 5789/87000 [00:01<00:18, 4454.26it/s]  7%|▋         | 6235/87000 [00:01<00:18, 4389.01it/s]  8%|▊         | 6681/87000 [00:01<00:18, 4408.68it/s]  8%|▊         | 7127/87000 [00:01<00:18, 4422.55it/s]  9%|▊         | 7574/87000 [00:01<00:17, 4436.18it/s]  9%|▉         | 8020/87000 [00:01<00:17, 4441.05it/s] 10%|▉         | 8467/87000 [00:01<00:17, 4446.88it/s] 10%|█         | 8914/87000 [00:02<00:17, 4452.07it/s] 11%|█         | 9361/87000 [00:02<00:17, 4456.32it/s] 11%|█▏        | 9807/87000 [00:02<00:17, 4455.82it/s] 12%|█▏        | 10253/87000 [00:02<00:17, 4455.27it/s] 12%|█▏        | 10700/87000 [00:02<00:17, 4458.27it/s] 13%|█▎        | 11146/87000 [00:02<00:17, 4457.78it/s] 13%|█▎        | 11593/87000 [00:02<00:16, 4461.08it/s] 14%|█▍        | 12040/87000 [00:02<00:16, 4460.07it/s] 14%|█▍        | 12487/87000 [00:02<00:16, 4442.29it/s] 15%|█▍        | 12933/87000 [00:02<00:16, 4447.14it/s] 15%|█▌        | 13379/87000 [00:03<00:16, 4450.23it/s] 16%|█▌        | 13825/87000 [00:03<00:16, 4451.54it/s] 16%|█▋        | 14271/87000 [00:03<00:16, 4452.15it/s] 17%|█▋        | 14717/87000 [00:03<00:16, 4453.47it/s] 17%|█▋        | 15165/87000 [00:03<00:16, 4460.64it/s] 18%|█▊        | 15613/87000 [00:03<00:15, 4463.66it/s] 18%|█▊        | 16060/87000 [00:03<00:15, 4462.44it/s] 19%|█▉        | 16507/87000 [00:03<00:15, 4461.06it/s] 19%|█▉        | 16954/87000 [00:03<00:15, 4462.52it/s] 20%|██        | 17401/87000 [00:03<00:15, 4462.34it/s] 21%|██        | 17848/87000 [00:04<00:15, 4462.98it/s] 21%|██        | 18296/87000 [00:04<00:15, 4467.17it/s] 22%|██▏       | 18743/87000 [00:04<00:15, 4465.18it/s] 22%|██▏       | 19191/87000 [00:04<00:15, 4467.61it/s] 23%|██▎       | 19638/87000 [00:04<00:15, 4464.63it/s] 23%|██▎       | 20085/87000 [00:04<00:15, 4446.03it/s] 24%|██▎       | 20530/87000 [00:04<00:14, 4446.42it/s] 24%|██▍       | 20975/87000 [00:04<00:14, 4446.42it/s] 25%|██▍       | 21422/87000 [00:04<00:14, 4450.53it/s] 25%|██▌       | 21868/87000 [00:04<00:14, 4451.09it/s] 26%|██▌       | 22314/87000 [00:05<00:14, 4450.92it/s] 26%|██▌       | 22760/87000 [00:05<00:14, 4450.90it/s] 27%|██▋       | 23206/87000 [00:05<00:14, 4453.47it/s] 27%|██▋       | 23652/87000 [00:05<00:14, 4454.90it/s] 28%|██▊       | 24100/87000 [00:05<00:14, 4461.70it/s] 28%|██▊       | 24547/87000 [00:05<00:13, 4463.28it/s] 29%|██▊       | 24994/87000 [00:05<00:13, 4463.70it/s] 29%|██▉       | 25441/87000 [00:05<00:13, 4461.52it/s] 30%|██▉       | 25888/87000 [00:05<00:13, 4458.06it/s] 30%|███       | 26334/87000 [00:05<00:13, 4452.49it/s] 31%|███       | 26780/87000 [00:06<00:13, 4452.79it/s] 31%|███▏      | 27226/87000 [00:06<00:13, 4453.80it/s] 32%|███▏      | 27673/87000 [00:06<00:13, 4457.82it/s] 32%|███▏      | 28121/87000 [00:06<00:13, 4463.52it/s] 33%|███▎      | 28568/87000 [00:06<00:13, 4458.33it/s] 33%|███▎      | 29014/87000 [00:06<00:13, 4458.09it/s] 34%|███▍      | 29460/87000 [00:06<00:12, 4455.26it/s] 34%|███▍      | 29906/87000 [00:06<00:12, 4453.68it/s] 35%|███▍      | 30352/87000 [00:06<00:12, 4439.12it/s] 35%|███▌      | 30797/87000 [00:06<00:12, 4440.39it/s] 36%|███▌      | 31244/87000 [00:07<00:12, 4448.63it/s] 36%|███▋      | 31692/87000 [00:07<00:12, 4455.07it/s] 37%|███▋      | 32138/87000 [00:07<00:12, 4454.21it/s] 37%|███▋      | 32584/87000 [00:07<00:12, 4455.52it/s] 38%|███▊      | 33030/87000 [00:07<00:12, 4454.65it/s] 38%|███▊      | 33477/87000 [00:07<00:12, 4456.24it/s] 39%|███▉      | 33923/87000 [00:07<00:11, 4454.37it/s] 40%|███▉      | 34369/87000 [00:07<00:11, 4455.37it/s] 40%|████      | 34815/87000 [00:07<00:11, 4456.50it/s] 41%|████      | 35261/87000 [00:07<00:11, 4452.83it/s] 41%|████      | 35708/87000 [00:08<00:11, 4455.73it/s] 42%|████▏     | 36154/87000 [00:08<00:11, 4455.59it/s] 42%|████▏     | 36601/87000 [00:08<00:11, 4458.21it/s] 43%|████▎     | 37047/87000 [00:08<00:11, 4456.12it/s] 43%|████▎     | 37493/87000 [00:08<00:11, 4455.07it/s] 44%|████▎     | 37939/87000 [00:08<00:11, 4452.51it/s] 44%|████▍     | 38385/87000 [00:08<00:10, 4451.34it/s] 45%|████▍     | 38831/87000 [00:08<00:10, 4452.67it/s] 45%|████▌     | 39279/87000 [00:08<00:10, 4458.77it/s] 46%|████▌     | 39725/87000 [00:08<00:10, 4455.03it/s] 46%|████▌     | 40171/87000 [00:09<00:10, 4450.56it/s] 47%|████▋     | 40617/87000 [00:09<00:10, 4443.79it/s] 47%|████▋     | 41063/87000 [00:09<00:10, 4448.29it/s] 48%|████▊     | 41509/87000 [00:09<00:10, 4449.33it/s] 48%|████▊     | 41956/87000 [00:09<00:10, 4453.67it/s] 49%|████▊     | 42402/87000 [00:09<00:10, 4452.11it/s] 49%|████▉     | 42848/87000 [00:09<00:09, 4435.60it/s] 50%|████▉     | 43293/87000 [00:09<00:09, 4437.16it/s] 50%|█████     | 43739/87000 [00:09<00:09, 4441.63it/s] 51%|█████     | 44185/87000 [00:09<00:09, 4444.75it/s] 51%|█████▏    | 44630/87000 [00:10<00:09, 4442.82it/s] 52%|█████▏    | 45075/87000 [00:10<00:09, 4444.35it/s] 52%|█████▏    | 45521/87000 [00:10<00:09, 4447.53it/s] 53%|█████▎    | 45966/87000 [00:10<00:09, 4446.38it/s] 53%|█████▎    | 46411/87000 [00:10<00:09, 4442.87it/s] 54%|█████▍    | 46857/87000 [00:10<00:09, 4445.36it/s] 54%|█████▍    | 47303/87000 [00:10<00:08, 4448.03it/s] 55%|█████▍    | 47749/87000 [00:10<00:08, 4449.00it/s] 55%|█████▌    | 48195/87000 [00:10<00:08, 4450.82it/s] 56%|█████▌    | 48641/87000 [00:10<00:08, 4452.45it/s] 56%|█████▋    | 49088/87000 [00:11<00:08, 4456.40it/s] 57%|█████▋    | 49535/87000 [00:11<00:08, 4457.68it/s] 57%|█████▋    | 49981/87000 [00:11<00:08, 4456.72it/s] 58%|█████▊    | 50428/87000 [00:11<00:08, 4459.72it/s] 58%|█████▊    | 50874/87000 [00:11<00:08, 4456.94it/s] 59%|█████▉    | 51320/87000 [00:11<00:08, 4454.23it/s] 60%|█████▉    | 51766/87000 [00:11<00:07, 4445.82it/s] 60%|██████    | 52211/87000 [00:11<00:07, 4445.85it/s] 61%|██████    | 52656/87000 [00:11<00:07, 4446.64it/s] 61%|██████    | 53102/87000 [00:11<00:07, 4448.72it/s] 62%|██████▏   | 53548/87000 [00:12<00:07, 4449.73it/s] 62%|██████▏   | 53993/87000 [00:12<00:07, 4448.98it/s] 63%|██████▎   | 54439/87000 [00:12<00:07, 4450.65it/s] 63%|██████▎   | 54885/87000 [00:12<00:07, 4447.24it/s] 64%|██████▎   | 55330/87000 [00:12<00:07, 4444.18it/s] 64%|██████▍   | 55776/87000 [00:12<00:07, 4446.04it/s] 65%|██████▍   | 56223/87000 [00:12<00:06, 4452.56it/s] 65%|██████▌   | 56669/87000 [00:12<00:06, 4450.94it/s] 66%|██████▌   | 57115/87000 [00:12<00:06, 4451.29it/s] 66%|██████▌   | 57561/87000 [00:12<00:06, 4449.46it/s] 67%|██████▋   | 58008/87000 [00:13<00:06, 4452.87it/s] 67%|██████▋   | 58454/87000 [00:13<00:06, 4445.84it/s] 68%|██████▊   | 58899/87000 [00:13<00:06, 4444.87it/s] 68%|██████▊   | 59344/87000 [00:13<00:06, 4442.64it/s] 69%|██████▊   | 59789/87000 [00:13<00:06, 4427.83it/s] 69%|██████▉   | 60234/87000 [00:13<00:06, 4433.10it/s] 70%|██████▉   | 60680/87000 [00:13<00:05, 4438.16it/s] 70%|███████   | 61125/87000 [00:13<00:05, 4441.26it/s] 71%|███████   | 61570/87000 [00:13<00:05, 4439.13it/s] 71%|███████▏  | 62015/87000 [00:13<00:05, 4441.11it/s] 72%|███████▏  | 62460/87000 [00:14<00:05, 4442.28it/s] 72%|███████▏  | 62905/87000 [00:14<00:05, 4439.29it/s] 73%|███████▎  | 63351/87000 [00:14<00:05, 4443.13it/s] 73%|███████▎  | 63797/87000 [00:14<00:05, 4445.79it/s] 74%|███████▍  | 64243/87000 [00:14<00:05, 4449.09it/s] 74%|███████▍  | 64688/87000 [00:14<00:05, 4449.20it/s] 75%|███████▍  | 65133/87000 [00:14<00:04, 4449.12it/s] 75%|███████▌  | 65579/87000 [00:14<00:04, 4451.55it/s] 76%|███████▌  | 66025/87000 [00:14<00:04, 4451.10it/s] 76%|███████▋  | 66471/87000 [00:14<00:04, 4449.50it/s] 77%|███████▋  | 66918/87000 [00:15<00:04, 4452.76it/s] 77%|███████▋  | 67364/87000 [00:15<00:04, 4447.89it/s] 78%|███████▊  | 67810/87000 [00:15<00:04, 4449.90it/s] 78%|███████▊  | 68256/87000 [00:15<00:04, 4449.95it/s] 79%|███████▉  | 68702/87000 [00:15<00:04, 4451.78it/s] 79%|███████▉  | 69148/87000 [00:15<00:04, 4453.42it/s] 80%|███████▉  | 69595/87000 [00:15<00:03, 4456.61it/s] 81%|████████  | 70041/87000 [00:15<00:03, 4456.12it/s] 81%|████████  | 70487/87000 [00:15<00:03, 4453.54it/s] 82%|████████▏ | 70933/87000 [00:15<00:03, 4451.23it/s] 82%|████████▏ | 71379/87000 [00:16<00:03, 4452.30it/s] 83%|████████▎ | 71825/87000 [00:16<00:03, 4451.11it/s] 83%|████████▎ | 72271/87000 [00:16<00:03, 4450.96it/s] 84%|████████▎ | 72717/87000 [00:16<00:03, 4449.11it/s] 84%|████████▍ | 73162/87000 [00:16<00:03, 4449.00it/s] 85%|████████▍ | 73607/87000 [00:16<00:03, 4446.66it/s] 85%|████████▌ | 74053/87000 [00:16<00:02, 4448.30it/s] 86%|████████▌ | 74498/87000 [00:16<00:02, 4446.39it/s] 86%|████████▌ | 74944/87000 [00:16<00:02, 4447.66it/s] 87%|████████▋ | 75389/87000 [00:16<00:02, 4448.20it/s] 87%|████████▋ | 75835/87000 [00:17<00:02, 4449.82it/s] 88%|████████▊ | 76281/87000 [00:17<00:02, 4452.52it/s] 88%|████████▊ | 76727/87000 [00:17<00:02, 4451.23it/s] 89%|████████▊ | 77173/87000 [00:17<00:02, 4452.53it/s] 89%|████████▉ | 77619/87000 [00:17<00:02, 4450.60it/s] 90%|████████▉ | 78065/87000 [00:17<00:02, 4444.58it/s] 90%|█████████ | 78510/87000 [00:17<00:01, 4444.63it/s] 91%|█████████ | 78955/87000 [00:17<00:01, 4444.86it/s] 91%|█████████▏| 79401/87000 [00:17<00:01, 4447.69it/s] 92%|█████████▏| 79848/87000 [00:17<00:01, 4451.49it/s] 92%|█████████▏| 80294/87000 [00:18<00:01, 4446.90it/s] 93%|█████████▎| 80740/87000 [00:18<00:01, 4448.09it/s] 93%|█████████▎| 81185/87000 [00:18<00:01, 4423.47it/s] 94%|█████████▍| 81629/87000 [00:18<00:01, 4426.96it/s] 94%|█████████▍| 82073/87000 [00:18<00:01, 4428.24it/s] 95%|█████████▍| 82518/87000 [00:18<00:01, 4432.21it/s] 95%|█████████▌| 82963/87000 [00:18<00:00, 4436.04it/s] 96%|█████████▌| 83408/87000 [00:18<00:00, 4439.37it/s] 96%|█████████▋| 83853/87000 [00:18<00:00, 4441.27it/s] 97%|█████████▋| 84298/87000 [00:18<00:00, 4442.18it/s] 97%|█████████▋| 84743/87000 [00:19<00:00, 4444.46it/s] 98%|█████████▊| 85188/87000 [00:19<00:00, 4444.62it/s] 98%|█████████▊| 85633/87000 [00:19<00:00, 4441.59it/s] 99%|█████████▉| 86078/87000 [00:19<00:00, 4440.92it/s] 99%|█████████▉| 86523/87000 [00:19<00:00, 4440.72it/s]100%|█████████▉| 86968/87000 [00:19<00:00, 4438.86it/s]100%|██████████| 87000/87000 [00:19<00:00, 4448.72it/s]
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.
+findfont: Font family 'Arial' not found.

@@ -14,10 +14,12 @@
 #BSUB -M 5GB
 ### -- set walltime limit: hh:mm -- 
 #BSUB -W 24:00
+### -- set the email address -- 
+# #BSUB -u 
 ### -- send notification at start -- 
-#BSUB -B 
+# #BSUB -B 
 ### -- send notification at completion -- 
-#BSUB -N 
+# #BSUB -N 
 ### -- Specify the output and error file. %J is the job-id -- 
 #BSUB -o Output_DS2_2p_CCFs.out 
 
