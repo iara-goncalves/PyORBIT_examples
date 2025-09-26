@@ -14,11 +14,11 @@ base_dir="../data"
 
 # LSF configuration
 queue="hpc"
-cores=16
-mem_per_core="4GB"
-mem_limit="5GB"
-walltime="24:00"
-#email="icogo@dtu.dk"
+cores=1
+mem_per_core="3GB"
+mem_limit="4GB"
+walltime="8:00"
+email="icogo@dtu.dk"
 
 echo "PyORBIT Complete Setup Generator"
 echo "=================================="
@@ -309,13 +309,13 @@ EOF
 ### -- set walltime limit: hh:mm -- 
 #BSUB -W ${walltime}
 ### -- set the email address -- 
-# #BSUB -u ${email}
+#BSUB -u ${email}
 ### -- send notification at start -- 
-# #BSUB -B 
+#BSUB -B 
 ### -- send notification at completion -- 
-# #BSUB -N 
+#BSUB -N 
 ### -- Specify the output and error file. %J is the job-id -- 
-#BSUB -o Output_${job_name}.out 
+#BSUB -o ../../../../out/Output_${job_name}.out 
 
 # Change to activity directory
 cd ${activity_dir}
