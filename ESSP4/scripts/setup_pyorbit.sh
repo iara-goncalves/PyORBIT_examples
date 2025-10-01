@@ -14,10 +14,10 @@ base_dir="../data"
 
 # LSF configuration
 queue="hpc"
-cores=1
-mem_per_core="3GB"
-mem_limit="4GB"
-walltime="8:00"
+cores=16
+mem_per_core="1GB"
+mem_limit="2GB"
+walltime="24:00"
 email="icogo@dtu.dk"
 
 echo "PyORBIT Complete Setup Generator"
@@ -272,10 +272,10 @@ solver:
     npop_mult: 4
   emcee:
     npop_mult: 4
-    nsteps: 100000
-    nburn: 25000
-    nsave: 25000
-    thin: 100
+    nsteps: 500000
+    nburn: 150000
+    nsave: 150000
+    thin: 150
     #use_threading_pool: False
   nested_sampling:
     nlive: 1000
@@ -315,7 +315,7 @@ EOF
 ### -- send notification at completion -- 
 #BSUB -N 
 ### -- Specify the output and error file. %J is the job-id -- 
-#BSUB -o ../../../../out/Output_${job_name}.out 
+#BSUB -o ../out/Output_${job_name}.out
 
 # Change to activity directory
 cd ${activity_dir}

@@ -5,15 +5,15 @@
 ### -- set the job Name -- 
 #BSUB -J DS5_1p_4activity_indi
 ### -- ask for number of cores (default: 1) -- 
-#BSUB -n 1
+#BSUB -n 16
 ### -- specify that the cores must be on the same host -- 
 #BSUB -R "span[hosts=1]"
-### -- specify that we need 3GB of memory per core/slot -- 
-#BSUB -R "rusage[mem=3GB]"
-### -- specify that we want the job to get killed if it exceeds 4GB per core/slot -- 
-#BSUB -M 4GB
+### -- specify that we need 1GB of memory per core/slot -- 
+#BSUB -R "rusage[mem=1GB]"
+### -- specify that we want the job to get killed if it exceeds 2GB per core/slot -- 
+#BSUB -M 2GB
 ### -- set walltime limit: hh:mm -- 
-#BSUB -W 8:00
+#BSUB -W 24:00
 ### -- set the email address -- 
 #BSUB -u icogo@dtu.dk
 ### -- send notification at start -- 
@@ -21,7 +21,7 @@
 ### -- send notification at completion -- 
 #BSUB -N 
 ### -- Specify the output and error file. %J is the job-id -- 
-#BSUB -o ./out/Output_DS5_1p_4activity_indi.out 
+#BSUB -o ../out/Output_DS5_1p_4activity_indi.out
 
 # Change to activity directory
 cd ../data/DS5/DS5_1p/DS5_1p_4activity_indi
