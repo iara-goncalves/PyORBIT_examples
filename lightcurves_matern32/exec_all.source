@@ -1,7 +1,0 @@
-nice -19 pyorbit_run emcee LC_RV_model01.yaml > LC_RV_model01_emcee_run.log
-nice -19 pyorbit_run emcee LC_RV_model02.yaml > LC_RV_model02_emcee_run.log
-nice -19 pyorbit_run emcee LC_RV_model03.yaml > LC_RV_model03_emcee_run.log
-
-nice -19 pyorbit_results emcee LC_RV_model01.yaml -all > LC_RV_model01_emcee_res.log
-nice -19 pyorbit_results emcee LC_RV_model02.yaml -all > LC_RV_model02_emcee_res.log
-nice -19 pyorbit_results emcee LC_RV_model03.yaml -all > LC_RV_model03_emcee_res.log
