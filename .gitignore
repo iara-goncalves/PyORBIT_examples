@@ -62,6 +62,7 @@ ESSP4/*
 !ESSP4/scripts/**
 !ESSP4/scripts_multiple/
 !ESSP4/scripts_multiple/**
+ESSP4/out/
 
 # Ignore other PyORBIT_examples folders
 advanced_examples/
