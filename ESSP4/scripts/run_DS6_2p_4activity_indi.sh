@@ -15,7 +15,7 @@
 ### -- set walltime limit: hh:mm -- 
 #BSUB -W 24:00
 ### -- set the email address -- 
-#BSUB -u icogo@dtu.dk
+#BSUB -u 
 ### -- send notification at start -- 
 #BSUB -B 
 ### -- send notification at completion -- 
@@ -24,13 +24,13 @@
 #BSUB -o ../out/Output_DS6_2p_4activity_indi.out
 
 # Change to activity directory
-cd ../data/DS6/DS6_2p/DS6_2p_4activity_indi
+cd ../results_jz/DS6/DS6_2p/DS6_2p_4activity_indi
 
 # Clean up previous runs
 rm -f configuration_file_emcee_run_DS6_2p_4activity_indi.log Output_DS6_2p_4activity_indi.out
 
 # Activate PyORBIT environment
-source /work2/lbuc/iara/anaconda3/etc/profile.d/conda.sh
+source /zhome/9d/b/207249/anaconda3/etc/profile.d/conda.sh
 conda activate pyorbit
 
 # Run PyORBIT analysis

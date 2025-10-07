@@ -10,8 +10,6 @@
 
 # Packages #
 ############
-# it's better to unpack these files and commit the raw source
-# git has its own built in compression methods
 *.7z
 *.dmg
 *.gz
@@ -53,24 +51,27 @@ pyorbit_package.egg-info/
 
 # Ignore data files
 *.p
-
-# Optional: Also ignore common Python/data science files
 *.pyc
-__pycache__/
 *.pkl
 *.pickle
-.DS_Store
-.dat
+*.dat
 
-ESSP4/data
-advanced_examples
-correlated_models
-gaussian_processes
-gp_multiplt_seasons
-gp_newkernels
-harmonics
-lightcurves_matern32
-nested_sampling
-notebooks
-quickstart
-ttv_measurement
+# Ignore everything in ESSP4 except scripts folders
+ESSP4/*
+!ESSP4/scripts/
+!ESSP4/scripts/**
+!ESSP4/scripts_multiple/
+!ESSP4/scripts_multiple/**
+
+# Ignore other PyORBIT_examples folders
+advanced_examples/
+correlated_models/
+gaussian_processes/
+gp_multiple_seasons/
+gp_newkernels/
+harmonics/
+lightcurves_matern32/
+nested_sampling/
+notebooks/
+quickstart/
+ttv_measurement/

@@ -2066,3 +2066,16 @@ findfont: Font family 'Arial' not found.
   0%|          | 0/39 [00:00<?, ?it/s]  5%|▌         | 2/39 [00:00<00:02, 15.71it/s] 10%|█         | 4/39 [00:00<00:02, 15.71it/s] 15%|█▌        | 6/39 [00:00<00:02, 15.86it/s] 21%|██        | 8/39 [00:00<00:01, 16.50it/s] 26%|██▌       | 10/39 [00:00<00:01, 17.18it/s] 31%|███       | 12/39 [00:00<00:01, 17.84it/s] 36%|███▌      | 14/39 [00:00<00:01, 18.26it/s] 44%|████▎     | 17/39 [00:00<00:01, 19.20it/s] 51%|█████▏    | 20/39 [00:01<00:00, 19.77it/s] 59%|█████▉    | 23/39 [00:01<00:00, 20.15it/s] 67%|██████▋   | 26/39 [00:01<00:00, 20.45it/s] 74%|███████▍  | 29/39 [00:01<00:00, 20.18it/s] 82%|████████▏ | 32/39 [00:01<00:00, 19.56it/s] 87%|████████▋ | 34/39 [00:01<00:00, 18.76it/s] 92%|█████████▏| 36/39 [00:01<00:00, 18.08it/s] 95%|█████████▍| 37/39 [00:02<00:00, 17.84it/s]
   0%|          | 0/39 [00:00<?, ?it/s]  5%|▌         | 2/39 [00:00<00:02, 15.72it/s] 10%|█         | 4/39 [00:00<00:02, 15.69it/s] 15%|█▌        | 6/39 [00:00<00:02, 15.85it/s] 21%|██        | 8/39 [00:00<00:01, 16.50it/s] 26%|██▌       | 10/39 [00:00<00:01, 17.20it/s] 31%|███       | 12/39 [00:00<00:01, 17.85it/s] 36%|███▌      | 14/39 [00:00<00:01, 18.25it/s] 44%|████▎     | 17/39 [00:00<00:01, 19.18it/s] 51%|█████▏    | 20/39 [00:01<00:00, 19.75it/s] 59%|█████▉    | 23/39 [00:01<00:00, 20.13it/s] 67%|██████▋   | 26/39 [00:01<00:00, 20.42it/s] 74%|███████▍  | 29/39 [00:01<00:00, 20.16it/s] 82%|████████▏ | 32/39 [00:01<00:00, 19.55it/s] 87%|████████▋ | 34/39 [00:01<00:00, 18.77it/s] 92%|█████████▏| 36/39 [00:01<00:00, 18.09it/s] 95%|█████████▍| 37/39 [00:02<00:00, 17.83it/s]
 Job DS6_1p_4activity_indi completed at: Tue Oct  7 06:56:44 CEST 2025
+Traceback (most recent call last):
+  File "/work2/lbuc/jzhao/conda_envs/pyorbit/bin/pyorbit_results", line 7, in <module>
+    sys.exit(pyorbit_results())
+  File "/work2/lbuc/jzhao/conda_envs/pyorbit/lib/python3.10/site-packages/pyorbit/pyorbit_results.py", line 235, in pyorbit_results
+    pyorbit.pyorbit_getresults(config_in, sampler_name, plot_dictionary)
+  File "/work2/lbuc/jzhao/conda_envs/pyorbit/lib/python3.10/site-packages/pyorbit/samplers/pyorbit_getresults.py", line 87, in pyorbit_getresults
+    emcee_load_from_cpickle(dir_input)
+  File "/work2/lbuc/jzhao/conda_envs/pyorbit/lib/python3.10/site-packages/pyorbit/subroutines/io_subroutines.py", line 143, in emcee_load_from_cpickle
+    return affine_load_from_cpickle(emcee_dir_output, prefix)
+  File "/work2/lbuc/jzhao/conda_envs/pyorbit/lib/python3.10/site-packages/pyorbit/subroutines/io_subroutines.py", line 113, in affine_load_from_cpickle
+    mc = pickle.load(open(dir_output + add_prefix + "model_container.p", "rb"))
+FileNotFoundError: [Errno 2] No such file or directory: './DS6_1p_4activity_indi/emcee/model_container.p'
+Job DS6_1p_4activity_indi completed at: Tue Oct  7 11:25:43 CEST 2025

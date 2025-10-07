@@ -2524,3 +2524,16 @@ findfont: Font family 'Arial' not found.
   0%|          | 0/39 [00:00<?, ?it/s] 10%|█         | 4/39 [00:00<00:01, 32.22it/s] 21%|██        | 8/39 [00:00<00:00, 32.94it/s] 31%|███       | 12/39 [00:00<00:00, 34.67it/s] 41%|████      | 16/39 [00:00<00:00, 36.45it/s] 54%|█████▍    | 21/39 [00:00<00:00, 37.94it/s] 67%|██████▋   | 26/39 [00:00<00:00, 39.19it/s] 77%|███████▋  | 30/39 [00:00<00:00, 39.04it/s] 87%|████████▋ | 34/39 [00:00<00:00, 37.76it/s] 95%|█████████▍| 37/39 [00:01<00:00, 35.54it/s]
   0%|          | 0/39 [00:00<?, ?it/s] 10%|█         | 4/39 [00:00<00:01, 32.08it/s] 21%|██        | 8/39 [00:00<00:00, 32.92it/s] 31%|███       | 12/39 [00:00<00:00, 34.97it/s] 41%|████      | 16/39 [00:00<00:00, 36.70it/s] 54%|█████▍    | 21/39 [00:00<00:00, 38.40it/s] 67%|██████▋   | 26/39 [00:00<00:00, 39.61it/s] 77%|███████▋  | 30/39 [00:00<00:00, 39.36it/s] 87%|████████▋ | 34/39 [00:00<00:00, 37.82it/s] 95%|█████████▍| 37/39 [00:01<00:00, 35.68it/s]
 Job DS6_2p_4activity_indi completed at: Tue Oct  7 04:48:27 CEST 2025
+Traceback (most recent call last):
+  File "/work2/lbuc/jzhao/conda_envs/pyorbit/bin/pyorbit_results", line 7, in <module>
+    sys.exit(pyorbit_results())
+  File "/work2/lbuc/jzhao/conda_envs/pyorbit/lib/python3.10/site-packages/pyorbit/pyorbit_results.py", line 235, in pyorbit_results
+    pyorbit.pyorbit_getresults(config_in, sampler_name, plot_dictionary)
+  File "/work2/lbuc/jzhao/conda_envs/pyorbit/lib/python3.10/site-packages/pyorbit/samplers/pyorbit_getresults.py", line 87, in pyorbit_getresults
+    emcee_load_from_cpickle(dir_input)
+  File "/work2/lbuc/jzhao/conda_envs/pyorbit/lib/python3.10/site-packages/pyorbit/subroutines/io_subroutines.py", line 143, in emcee_load_from_cpickle
+    return affine_load_from_cpickle(emcee_dir_output, prefix)
+  File "/work2/lbuc/jzhao/conda_envs/pyorbit/lib/python3.10/site-packages/pyorbit/subroutines/io_subroutines.py", line 113, in affine_load_from_cpickle
+    mc = pickle.load(open(dir_output + add_prefix + "model_container.p", "rb"))
+FileNotFoundError: [Errno 2] No such file or directory: './DS6_2p_4activity_indi/emcee/model_container.p'
+Job DS6_2p_4activity_indi completed at: Tue Oct  7 11:26:13 CEST 2025
