@@ -7,7 +7,7 @@
 # Define arrays
 datasets=(DS1 DS2 DS3 DS4 DS5 DS6 DS7 DS8 DS9)
 planets=(1p 2p 3p)
-activities=(2activity_indi 4activity_indi 5activity_indi CCFs white_noise)
+activities=(4activity_indi)  # Only one activity configuration
 
 # Base directory - pointing from scripts/ to data/
 base_dir="../data"
@@ -24,7 +24,7 @@ echo "PyORBIT Complete Setup Generator"
 echo "=================================="
 echo "Datasets: ${#datasets[@]} (DS1-DS9)"
 echo "Planets: ${#planets[@]} (1p, 2p, 3p)"
-echo "Activities: ${#activities[@]} (2activity_indi, 4activity_indi, 5activity_indi, CCFs, white_noise)"
+echo "Activities: 4 indicators (FWHM, Contrast, BIS, Halpha)"
 echo "Base directory: $base_dir"
 echo ""
 
@@ -51,7 +51,7 @@ for dataset in "${datasets[@]}"; do
         echo "  Created planet directory: $planet_dir"
         
         for activity in "${activities[@]}"; do
-            # Create activity subdirectory (e.g., DS5/DS5_1p/DS5_1p_2activity_indi)
+            # Create activity subdirectory (e.g., DS5/DS5_1p/DS5_1p_4activity_indi)
             activity_dir="${planet_dir}/${dataset}_${planet}_${activity}"
             mkdir -p "$activity_dir"
             echo "    Created activity directory: $activity_dir"
@@ -66,97 +66,11 @@ for dataset in "${datasets[@]}"; do
                 "3p") num_planets=3 ;;
             esac
             
-            # Check if this is a white noise run
-            if [[ $activity == "white_noise" ]]; then
-                # Generate white noise YAML configuration
-                cat > "$yaml_file" << EOF
-inputs:
-  RVdata:
-    file: ../../../${dataset}_RV.dat
-    kind: RV
-    models:
-      - radial_velocities
-
-common:
-  planets:
-EOF
-
-                # Add planet configurations for white noise
-                planet_letters=("b" "c" "d")  # Standard planet naming
-                for ((p=0; p<num_planets; p++)); do
-                    planet_letter=${planet_letters[$p]}
-                    cat >> "$yaml_file" << EOF
-    ${planet_letter}:
-      orbit: keplerian
-      boundaries:
-        P: [1.3, 100.0]
-        K: [0.001, 10.0]
-        e: [0.00, 0.70]
-      priors:
-        e: ['Gaussian', 0.00, 0.098]
-EOF
-                done
-
-                # Add star section for white noise
-                cat >> "$yaml_file" << EOF
-  star:
-    star_parameters:
-      priors:
-        mass: ['Gaussian', 1, 0.000001]
-        radius: ['Gaussian', 1, 0.000001]
-        density: ['Gaussian', 1, 0.000001]
-
-models:
-  radial_velocities:
-    planets:
-EOF
-
-                # Add planet list for radial_velocities model
-                for ((p=0; p<num_planets; p++)); do
-                    planet_letter=${planet_letters[$p]}
-                    cat >> "$yaml_file" << EOF
-      - ${planet_letter}
-EOF
-                done
-
-                # Add parameters and solver sections for white noise
-                cat >> "$yaml_file" << EOF
-
-parameters:
-  Tref: 59334.700184
-  low_ram_plot: True
-  plot_split_threshold: 1000
-  cpu_threads: 16
-
-solver:
-  pyde:
-    ngen: 50000
-    npop_mult: 4
-  emcee:
-    npop_mult: 4
-    nsteps: 50000
-    nburn: 20000
-    thin: 100
-  nested_sampling:
-    nlive: 1000
-  recenter_bounds: True
-EOF
-
-            else
-                # Generate regular activity indicator YAML configuration
-                # Determine activity indicators based on activity type
-                if [[ $activity == "2activity_indi" ]]; then
-                    activity_indicators=("BIS" "FWHM")
-                elif [[ $activity == "4activity_indi" ]]; then
-                    activity_indicators=("BIS" "FWHM" "CaII" "Halpha")
-                elif [[ $activity == "5activity_indi" ]]; then
-                    activity_indicators=("BIS" "CaII" "Contrast" "FWHM" "Halpha")
-                elif [[ $activity == "CCFs" ]]; then
-                    activity_indicators=("FWHM" "Contrast")
-                fi
-                
-                # Generate YAML configuration
-                cat > "$yaml_file" << EOF
+            # Activity indicators: FWHM, Contrast, BIS, Halpha
+            activity_indicators=("FWHM" "Contrast" "BIS" "Halpha")
+            
+            # Generate YAML configuration
+            cat > "$yaml_file" << EOF
 inputs:
   RVdata:
     file: ../../../${dataset}_RV.dat
@@ -166,29 +80,29 @@ inputs:
       - gp_multidimensional
 EOF
 
-                # Add activity indicator inputs
-                for indicator in "${activity_indicators[@]}"; do
-                    cat >> "$yaml_file" << EOF
+            # Add activity indicator inputs
+            for indicator in "${activity_indicators[@]}"; do
+                cat >> "$yaml_file" << EOF
   ${indicator}data:
     file: ../../../${dataset}_${indicator}.dat
     kind: ${indicator}
     models:
       - gp_multidimensional
 EOF
-                done
+            done
 
-                # Add common section
-                cat >> "$yaml_file" << EOF
+            # Add common section
+            cat >> "$yaml_file" << EOF
 
 common:
   planets:
 EOF
 
-                # Add planet configurations
-                planet_letters=("b" "c" "d")  # Standard planet naming
-                for ((p=0; p<num_planets; p++)); do
-                    planet_letter=${planet_letters[$p]}
-                    cat >> "$yaml_file" << EOF
+            # Add planet configurations
+            planet_letters=("b" "c" "d")  # Standard planet naming
+            for ((p=0; p<num_planets; p++)); do
+                planet_letter=${planet_letters[$p]}
+                cat >> "$yaml_file" << EOF
     ${planet_letter}:
       orbit: keplerian
       parametrization: Eastman2013
@@ -199,10 +113,10 @@ EOF
       priors:
         e: ['Gaussian', 0.00, 0.098]
 EOF
-                done
+            done
 
-                # Add activity section
-                cat >> "$yaml_file" << EOF
+            # Add activity section
+            cat >> "$yaml_file" << EOF
   activity:
     boundaries:
       Prot: [20.0, 35.0]
@@ -223,16 +137,16 @@ models:
     planets:
 EOF
 
-                # Add planet list for radial_velocities model
-                for ((p=0; p<num_planets; p++)); do
-                    planet_letter=${planet_letters[$p]}
-                    cat >> "$yaml_file" << EOF
+            # Add planet list for radial_velocities model
+            for ((p=0; p<num_planets; p++)); do
+                planet_letter=${planet_letters[$p]}
+                cat >> "$yaml_file" << EOF
       - ${planet_letter}
 EOF
-                done
+            done
 
-                # Add GP multidimensional model
-                cat >> "$yaml_file" << EOF
+            # Add GP multidimensional model
+            cat >> "$yaml_file" << EOF
   gp_multidimensional:
     model: spleaf_multidimensional_esp
     common: activity
@@ -246,19 +160,19 @@ EOF
       derivative: True
 EOF
 
-                # Add activity indicator configurations for GP model
-                for indicator in "${activity_indicators[@]}"; do
-                    cat >> "$yaml_file" << EOF
+            # Add activity indicator configurations for GP model
+            for indicator in "${activity_indicators[@]}"; do
+                cat >> "$yaml_file" << EOF
     ${indicator}data:
       boundaries:
         rot_amp: [-10.0, 10.0]
         con_amp: [-20.0, 20.0]
       derivative: True
 EOF
-                done
+            done
 
-                # Add parameters and solver sections
-                cat >> "$yaml_file" << EOF
+            # Add parameters and solver sections
+            cat >> "$yaml_file" << EOF
 
 parameters:
   Tref: 59334.700184
@@ -282,7 +196,6 @@ solver:
     sampling_efficiency: 0.30
   recenter_bounds: True
 EOF
-            fi
 
             ((yaml_count++))
             echo "      Created YAML: $yaml_file"
@@ -395,26 +308,18 @@ echo "All your jobs:"
 bjobs
 
 echo ""
-echo "PyORBIT jobs:"
-bjobs | grep -E "(DS[1-9]_[1-3]p_(2activity|4activity|5activity|CCFs|white_noise))"
+echo "PyORBIT jobs (4 activity indicators):"
+bjobs | grep -E "(DS[1-9]_[1-3]p_4activity_indi)"
 
 echo ""
 echo "Job summary:"
-total_jobs=$(bjobs | grep -c -E "(DS[1-9]_[1-3]p_(2activity|4activity|5activity|CCFs|white_noise))")
-running_jobs=$(bjobs | grep RUN | grep -c -E "(DS[1-9]_[1-3]p_(2activity|4activity|5activity|CCFs|white_noise))")
-pending_jobs=$(bjobs | grep PEND | grep -c -E "(DS[1-9]_[1-3]p_(2activity|4activity|5activity|CCFs|white_noise))")
+total_jobs=$(bjobs | grep -c -E "(DS[1-9]_[1-3]p_4activity_indi)")
+running_jobs=$(bjobs | grep RUN | grep -c -E "(DS[1-9]_[1-3]p_4activity_indi)")
+pending_jobs=$(bjobs | grep PEND | grep -c -E "(DS[1-9]_[1-3]p_4activity_indi)")
 
 echo "Total PyORBIT jobs: $total_jobs"
 echo "Running: $running_jobs"
 echo "Pending: $pending_jobs"
-
-echo ""
-echo "White noise jobs:"
-bjobs | grep -E "(DS[1-9]_[1-3]p_white_noise)"
-
-echo ""
-echo "Activity indicator jobs:"
-bjobs | grep -E "(DS[1-9]_[1-3]p_(2activity|4activity|5activity|CCFs))"
 
 echo ""
 echo "Refresh with: ./monitor_jobs.sh"
@@ -427,7 +332,7 @@ cat > "cancel_all_jobs.sh" << 'EOF'
 echo "Canceling all PyORBIT jobs..."
 echo "============================="
 
-job_ids=$(bjobs | grep -E "(DS[1-9]_[1-3]p_(2activity|4activity|5activity|CCFs|white_noise))" | awk '{print $1}')
+job_ids=$(bjobs | grep -E "(DS[1-9]_[1-3]p_4activity_indi)" | awk '{print $1}')
 
 if [ -z "$job_ids" ]; then
     echo "No PyORBIT jobs found to cancel."
@@ -467,26 +372,21 @@ for dataset in "${datasets[@]}"; do
     echo "  ${base_dir}/${dataset}/"
     for planet in "${planets[@]}"; do
         echo "    ├── ${dataset}_${planet}/"
-        for activity in "${activities[@]}"; do
-            echo "    │   ├── ${dataset}_${planet}_${activity}/"
-            echo "    │   │   └── ${dataset}_${planet}_${activity}.yaml"
-        done
+        echo "    │   ├── ${dataset}_${planet}_4activity_indi/"
+        echo "    │   │   └── ${dataset}_${planet}_4activity_indi.yaml"
     done
 done
 
 echo ""
-echo "White noise configurations:"
-echo "- No activity indicators (GP models)"
-echo "- Only RV data with Keplerian planets"
-echo "- Reduced MCMC steps (50k vs 100k)"
-echo "- Reduced burn-in (20k vs 25k)"
+echo "Configuration details:"
+echo "- 4 Activity indicators: FWHM, Contrast, BIS, Halpha"
+echo "- GP multidimensional model with rotation and convection"
+echo "- MCMC: 500k steps, 150k burn-in, 150k save, thin=150"
 echo ""
 echo "Next steps:"
 echo "1. Review YAML configurations if needed"
-echo "2. Test with one job first: bsub < run_DS1_1p_white_noise.sh"
+echo "2. Test with one job first: bsub < run_DS1_1p_4activity_indi.sh"
 echo "3. Submit all jobs: ./submit_all_jobs.sh"
 echo "4. Monitor progress: ./monitor_jobs.sh"
 echo ""
-echo "Total jobs will be: 135 (9 datasets × 3 planets × 5 configurations)"
-echo "  - 108 activity indicator jobs (4 types × 27 combinations)"
-echo "  - 27 white noise jobs (1 type × 27 combinations)"
+echo "Total jobs: 27 (9 datasets × 3 planets × 1 configuration)"
