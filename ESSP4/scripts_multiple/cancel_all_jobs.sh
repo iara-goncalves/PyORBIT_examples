@@ -1,9 +1,9 @@
 #!/bin/bash
 
-echo "Canceling all PyORBIT jobs (multi-instrument)..."
-echo "================================================="
+echo "Canceling all PyORBIT jobs (all configurations)..."
+echo "=================================================="
 
-job_ids=$(bjobs | grep -E "(DS[1-9]_[1-3]p_4activity_indi)" | awk '{print $1}')
+job_ids=$(bjobs | grep -E "(DS[1-9]_[0-3]p_(2_activity_indi|4_activity_indi|5_activity_indi|ccfs|white_noise))" | awk '{print $1}')
 
 if [ -z "$job_ids" ]; then
     echo "No PyORBIT jobs found to cancel."

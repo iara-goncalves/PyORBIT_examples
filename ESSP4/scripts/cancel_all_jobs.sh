@@ -1,28 +1,58 @@
 #!/bin/bash
+# cancel_all_jobs.sh - Cancel all LSF jobs for current user
 
-echo "Canceling all PyORBIT jobs..."
-echo "============================="
+USER=$(whoami)
 
-job_ids=$(bjobs | grep -E "(DS[1-9]_[1-3]p_(2activity|4activity|5activity|CCFs|white_noise))" | awk '{print $1}')
+echo "=========================================="
+echo "  LSF Job Cancellation Script"
+echo "=========================================="
+echo "User: $USER"
+echo ""
 
-if [ -z "$job_ids" ]; then
-    echo "No PyORBIT jobs found to cancel."
+# Get list of all jobs
+JOBS=$(bjobs -u $USER -o "jobid" -noheader 2>/dev/null)
+
+if [ -z "$JOBS" ]; then
+    echo "✓ No jobs found to cancel."
     exit 0
 fi
 
-echo "Found PyORBIT jobs to cancel:"
-echo "$job_ids"
+# Count jobs
+NUM_JOBS=$(echo "$JOBS" | wc -l)
+echo "Found $NUM_JOBS job(s) to cancel:"
 echo ""
 
-read -p "Are you sure you want to cancel all these jobs? (y/N): " -n 1 -r
+# Show job details before canceling
+bjobs -u $USER -o "jobid stat queue job_name submit_time" -noheader
+
+echo ""
+read -p "Cancel all these jobs? (y/N): " -n 1 -r
 echo ""
 
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-    for job_id in $job_ids; do
-        echo "Canceling job: $job_id"
-        bkill $job_id
+    echo ""
+    echo "Canceling jobs..."
+    
+    # Cancel all jobs
+    for jobid in $JOBS; do
+        bkill $jobid 2>/dev/null
+        if [ $? -eq 0 ]; then
+            echo "  ✓ Canceled job $jobid"
+        else
+            echo "  ✗ Failed to cancel job $jobid"
+        fi
     done
-    echo "All PyORBIT jobs canceled."
+    
+    echo ""
+    echo "=========================================="
+    echo "  Cancellation complete!"
+    echo "=========================================="
+    
+    # Wait a moment and show remaining jobs
+    sleep 2
+    echo ""
+    echo "Remaining jobs:"
+    bjobs -u $USER 2>/dev/null || echo "  ✓ No jobs remaining"
 else
-    echo "Operation canceled."
+    echo "Cancellation aborted."
 fi

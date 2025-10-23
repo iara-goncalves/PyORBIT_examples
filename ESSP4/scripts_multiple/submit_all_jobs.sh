@@ -1,7 +1,7 @@
 #!/bin/bash
 
-echo "Submitting all PyORBIT jobs (multi-instrument)..."
-echo "=================================================="
+echo "Submitting ALL PyORBIT jobs (all configurations)..."
+echo "===================================================="
 
 job_count=0
 submitted_jobs=()
@@ -22,7 +22,7 @@ for script in run_*.sh; do
             echo "   ✗ Failed to submit: $script"
             echo "     Error: $output"
         fi
-        sleep 1  # Small delay between submissions
+        sleep 1
     fi
 done
 
