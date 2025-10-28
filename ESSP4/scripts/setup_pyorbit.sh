@@ -27,8 +27,9 @@ queue="hpc"
 cores=16
 mem_per_core="1GB"
 mem_limit="2GB"
-walltime="24:00"
-email="icogo@dtu.dk"
+walltime="48:00"
+# email="icogo@dtu.dk"
+email="jzhao@space.dtu.dk"
 
 echo "PyORBIT Complete Setup Generator - Single Files Version"
 echo "======================================================="
@@ -235,8 +236,17 @@ solver:
     thin: 1
     #use_threading_pool: False
   nested_sampling:
-    nlive: 1000
-    sampling_efficiency: 0.30
+    nlive: 2000
+    sampling_efficiency: 0.10  # ← Lower = more thorough
+    bound: 'multi'  # ← Already set (good!)
+    sample: 'rwalk'  # ← Try random walk instead of auto
+    walks: 50  # ← More MCMC steps per iteration
+    maxiter: null  # ← Let it run until convergence
+    maxcall: null  # ← No call limit
+    dlogz: 0.01  # ← Already set (good!)
+    # Add these:
+    enlarge: 1.5  # ← Expand bounding ellipsoids (helps with multimodality)
+    bootstrap: 0  # ← Disable bootstrap (faster, more stable)
   recenter_bounds: True
 EOF
 }

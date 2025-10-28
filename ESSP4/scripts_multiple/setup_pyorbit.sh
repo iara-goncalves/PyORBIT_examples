@@ -19,6 +19,14 @@ config_indicators["5_activity_indi"]="BIS FWHM Contrast Halpha CaII"
 config_indicators["ccfs"]="FWHM Contrast"
 config_indicators["white_noise"]=""  # Only RV, no activity indicators
 
+# Activity indicator ranges for con_amp
+declare -A findicator_ranges
+indicator_ranges["Contrast"]="-600.0, 600.0"
+indicator_ranges["FWHM"]="-20.0, 20.0"
+indicator_ranges["BIS"]="-10.0, 10.0"
+indicator_ranges["Halpha"]="-1.0, 1.0"
+indicator_ranges["CaII"]="-1.0, 1.0"
+
 # Base directories
 data_dir="/work2/lbuc/iara/GitHub/PyORBIT_examples/ESSP4/data"
 results_dir="/work2/lbuc/iara/GitHub/PyORBIT_examples/ESSP4/results_multiple"
@@ -43,6 +51,12 @@ echo "  - 4_activity_indi: BIS, FWHM, Contrast, Halpha"
 echo "  - 5_activity_indi: BIS, FWHM, Contrast, Halpha, CaII"
 echo "  - ccfs: FWHM, Contrast"
 echo "  - white_noise: RV only"
+echo "Activity indicator con_amp ranges:"
+echo "  - Contrast: [-500, 500]"
+echo "  - FWHM: [-20, 20]"
+echo "  - BIS: [-10, 10]"
+echo "  - Halpha: [-1, 1]"
+echo "  - CaII: [-1, 1]"
 echo "Data directory: $data_dir"
 echo "Results directory: $results_dir"
 echo "Output directory: $out_dir"
@@ -159,7 +173,7 @@ EOF
   activity:
     boundaries:
       Prot: [20.0, 35.0]
-      Pdec: [5.0, 1000.0]
+      Pdec: [10.0, 1000.0]
       Oamp: [0.01, 1.0]
     priors:
       Prot: ['Gaussian', 28.00, 0.50]
@@ -218,14 +232,17 @@ EOF
 EOF
         done
 
-        # Add activity indicator configurations for GP model (all instruments)
+        # Add activity indicator configurations for GP model with specific ranges
         for indicator in "${indicators[@]}"; do
+            # Get the specific range for this indicator
+            con_amp_range="${indicator_ranges[$indicator]}"
+            
             for instrument in "${instruments[@]}"; do
                 cat >> "$yaml_file" << EOF
     ${indicator}data_${instrument}:
       boundaries:
-        rot_amp: [-10.0, 10.0]
-        con_amp: [-20.0, 20.0]
+        rot_amp: [${con_amp_range}]
+        con_amp: [-10.0, 10.0]
       derivative: True
 EOF
             done
@@ -246,15 +263,24 @@ solver:
     ngen: 50000
     npop_mult: 4
   emcee:
-    npop_mult: 4
+    npop_mult: 6
     nsteps: 50000
     nburn: 15000
     nsave: 15000
-    thin: 1
+    thin: 15
     #use_threading_pool: False
   nested_sampling:
-    nlive: 1000
-    sampling_efficiency: 0.30
+    nlive: 2000
+    sampling_efficiency: 0.10  # ← Lower = more thorough
+    bound: 'multi'  # ← Already set (good!)
+    sample: 'rwalk'  # ← Try random walk instead of auto
+    walks: 50  # ← More MCMC steps per iteration
+    maxiter: null  # ← Let it run until convergence
+    maxcall: null  # ← No call limit
+    dlogz: 0.01  # ← Already set (good!)
+    # Add these:
+    enlarge: 1.5  # ← Expand bounding ellipsoids (helps with multimodality)
+    bootstrap: 0  # ← Disable bootstrap (faster, more stable)
   recenter_bounds: True
 EOF
 }
@@ -366,6 +392,7 @@ for dataset in "${datasets[@]}"; do
     echo ""
 done
 
+# [Rest of the script remains the same - all the management scripts generation]
 # Generate management scripts
 echo "Creating job management scripts..."
 
@@ -698,6 +725,13 @@ echo "- white_noise: RV only (3 files per analysis, not available for 0p)"
 echo "- All use 3 instruments: expres, harps, neid"
 echo "- GP multidimensional model (except white_noise)"
 echo "- MCMC: 500k steps, 150k burn-in, 150k save, thin=100"
+echo ""
+echo "Activity indicator con_amp ranges:"
+echo "- Contrast: [-600, 600]"
+echo "- FWHM: [-20, 20]"
+echo "- BIS: [-10, 10]"
+echo "- Halpha: [-1, 1]"
+echo "- CaII: [-1, 1]"
 echo ""
 echo "Submission scripts:"
 echo "- ./submit_all_jobs.sh           - Submit ALL configurations"

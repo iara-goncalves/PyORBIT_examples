@@ -60,8 +60,14 @@ pyorbit_package.egg-info/
 ESSP4/*
 !ESSP4/scripts/
 !ESSP4/scripts/**
+!post_analysis/
+!post_analysis/**
 !ESSP4/scripts_multiple/
 !ESSP4/scripts_multiple/**
+!ESSP4/scripts_multiple_dynasty/
+!ESSP4/scripts_multiple_dynasty/**
+!ESSP4/scripts_fiesta/
+!ESSP4/scripts_fiesta/**
 ESSP4/out/
 
 # Ignore other PyORBIT_examples folders
@@ -76,3 +82,5 @@ nested_sampling/
 notebooks/
 quickstart/
 ttv_measurement/
+
+*.out
