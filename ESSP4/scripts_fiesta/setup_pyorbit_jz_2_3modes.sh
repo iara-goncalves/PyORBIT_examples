@@ -17,15 +17,15 @@ fiesta_configs=(2modes 3modes)  # FIESTA mode configurations
 
 # Base directories
 data_dir="/work2/lbuc/iara/GitHub/PyORBIT_examples/ESSP4/data"
-results_dir="/work2/lbuc/iara/GitHub/PyORBIT_examples/ESSP4/results_fiesta"
+results_dir="/work2/lbuc/iara/GitHub/PyORBIT_examples/ESSP4/results_fiesta_emcee"
 out_dir="/work2/lbuc/iara/GitHub/PyORBIT_examples/ESSP4/out_fiesta"
 
 # LSF configuration
 queue="hpc"
 cores=16
-mem_per_core="1GB"
-mem_limit="2GB"
-walltime="24:00"
+mem_per_core="2GB"
+mem_limit="3GB"
+walltime="48:00"
 email="jzhao@space.dtu.dk"
 
 echo "PyORBIT Complete Setup Generator - FIESTA Mode Version"
@@ -140,7 +140,7 @@ EOF
         K: [0.001, 10.0]
         e: [0.00, 0.70]
       priors:
-        e: ['Gaussian', 0.00, 0.098]
+        e: ['Gaussian', 0.1, 0.098]
 EOF
         done
     fi
@@ -201,7 +201,7 @@ EOF
         cat >> "$yaml_file" << EOF
     RVdata_${instrument}:
       boundaries:
-        rot_amp: [0.0, 10.0] #at least one must be positive definite
+        rot_amp: [0.0, 20.0] #at least one must be positive definite
         con_amp: [-20.0, 20.0]
       derivative: True
 EOF
@@ -213,7 +213,7 @@ EOF
             cat >> "$yaml_file" << EOF
     FIESTAdata_${instrument}_mode${mode}:
       boundaries:
-        rot_amp: [-10.0, 10.0]
+        rot_amp: [-20.0, 20.0]
         con_amp: [-20.0, 20.0]
       derivative: True
 EOF
@@ -232,7 +232,7 @@ parameters:
 solver:
   pyde:
     ngen: 50000
-    npop_mult: 4
+    npop_mult: 6
   emcee:
     npop_mult: 6
     nsteps: 50000
@@ -300,8 +300,8 @@ source /work2/lbuc/iara/anaconda3/etc/profile.d/conda.sh
 conda activate pyorbit
 
 # Run PyORBIT analysis
-pyorbit_run dynesty ${yaml_name} > configuration_file_emcee_run_${job_name}.log
-pyorbit_results dynesty ${yaml_name} -all >> configuration_file_emcee_run_${job_name}.log
+pyorbit_run emcee ${yaml_name} > configuration_file_emcee_run_${job_name}.log
+pyorbit_results emcee ${yaml_name} -all >> configuration_file_emcee_run_${job_name}.log
 
 # Create results directory and copy files
 mkdir -p ./${job_name}

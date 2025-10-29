@@ -58,16 +58,18 @@ pyorbit_package.egg-info/
 
 # Ignore everything in ESSP4 except scripts folders
 ESSP4/*
-!ESSP4/scripts/
-!ESSP4/scripts/**
 !post_analysis/
 !post_analysis/**
+!ESSP4/scripts/
+!ESSP4/scripts/**
+!ESSP4/scripts_fiesta/
+!ESSP4/scripts_fiesta/**
 !ESSP4/scripts_multiple/
 !ESSP4/scripts_multiple/**
 !ESSP4/scripts_multiple_dynasty/
 !ESSP4/scripts_multiple_dynasty/**
-!ESSP4/scripts_fiesta/
-!ESSP4/scripts_fiesta/**
+!ESSP4/submission_csv_files/
+!ESSP4/submission_csv_files/**
 ESSP4/out/
 
 # Ignore other PyORBIT_examples folders
