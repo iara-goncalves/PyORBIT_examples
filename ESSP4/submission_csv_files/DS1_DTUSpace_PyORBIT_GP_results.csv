@@ -1,4 +1,4 @@
-Time [eMJD],RV_C,eRV_C,RV_A,eRV_A,BISdata [m/s],eBISdata [m/s],CaIIdata [normalized],eCaIIdata [normalized],Contrastdata [normalized],eContrastdata [normalized],FWHMdata [m/s],eFWHMdata [m/s],Halphadata [normalized],eHalphadata [normalized]
+Time [eMJD],RV_C,eRV_C,RV_A,eRV_A,BISdata [m/s],eBISdata [m/s],CaIIdata [U],eCaIIdata [U],Contrastdata [U],eContrastdata [U],FWHMdata [m/s],eFWHMdata [m/s],Halphadata [U],eHalphadata [U]
 59337.993481,0.317469,1.129911,-0.97676,1.129911,-1.295278,0.95,-0.003648,0.003,206.687297,130.0,2.143761,5.0,-0.00113,0.001
 59337.997242,0.266973,1.12982,-0.910229,1.12982,-0.245278,0.95,-0.003029,0.003,229.75226,130.0,3.440622,5.0,-0.002181,0.001
 59338.004754,-2.207946,1.12982,1.596802,1.12982,1.771389,0.95,0.003442,0.003,335.587263,130.0,2.123619,5.0,4e-05,0.001

@@ -24,23 +24,36 @@
 #BSUB -o /work2/lbuc/iara/GitHub/PyORBIT_examples/ESSP4/out_fiesta/Output_DS2_1p_2modes.out
 
 # Change to configuration directory
-cd /work2/lbuc/iara/GitHub/PyORBIT_examples/ESSP4/results_fiesta_emcee/DS2/DS2_1p_2modes
+cd /work2/lbuc/iara/GitHub/PyORBIT_examples/ESSP4/results_fiesta_emcee_kostas/DS2/DS2_1p_2modes
 
 # Clean up previous runs
 rm -f configuration_file_emcee_run_DS2_1p_2modes.log
 
-# Activate PyORBIT environment
-source /work2/lbuc/iara/anaconda3/etc/profile.d/conda.sh
-conda activate pyorbit
+
+
+# Set up environment paths for jinzhao's installations
+export CONDA_BASE="/work2/lbuc/iara/anaconda3"
+export PATH="$CONDA_BASE/bin:$PATH"
+
+# Initialize conda for any user
+source $CONDA_BASE/etc/profile.d/conda.sh
+
+# Activate PyORBIT environment using CORRECT FULL PATH
+conda activate /work2/lbuc/iara/conda_envs/pyorbit
+
+
+# # Activate PyORBIT environment
+# source /work2/lbuc/iara/anaconda3/etc/profile.d/conda.sh
+# conda activate pyorbit
 
 # Run PyORBIT analysis
 pyorbit_run emcee DS2_1p_2modes.yaml > configuration_file_emcee_run_DS2_1p_2modes.log
 pyorbit_results emcee DS2_1p_2modes.yaml -all >> configuration_file_emcee_run_DS2_1p_2modes.log
 
 # Create results directory and copy files
-mkdir -p ./DS2_1p_2modes
-cp DS2_1p_2modes.yaml ./DS2_1p_2modes/
-cp configuration_file_emcee_run_DS2_1p_2modes.log ./DS2_1p_2modes/
+# mkdir -p ./DS2_1p_2modes
+# cp DS2_1p_2modes.yaml ./DS2_1p_2modes/
+# cp configuration_file_emcee_run_DS2_1p_2modes.log ./DS2_1p_2modes/
 
 # Deactivate environment
 conda deactivate

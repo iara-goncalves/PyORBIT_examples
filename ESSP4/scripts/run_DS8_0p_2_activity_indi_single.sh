@@ -13,9 +13,9 @@
 ### -- specify that we want the job to get killed if it exceeds 2GB per core/slot -- 
 #BSUB -M 2GB
 ### -- set walltime limit: hh:mm -- 
-#BSUB -W 24:00
+#BSUB -W 48:00
 ### -- set the email address -- 
-#BSUB -u icogo@dtu.dk
+#BSUB -u jzhao@space.dtu.dk
 ### -- send notification at start -- 
 #BSUB -B 
 ### -- send notification at completion -- 
@@ -38,9 +38,9 @@ pyorbit_run emcee DS8_0p_2_activity_indi.yaml > configuration_file_emcee_run_DS8
 pyorbit_results emcee DS8_0p_2_activity_indi.yaml -all >> configuration_file_emcee_run_DS8_0p_2_activity_indi_single.log
 
 # Create results directory and copy files
-mkdir -p ./DS8_0p_2_activity_indi_single
-cp DS8_0p_2_activity_indi.yaml ./DS8_0p_2_activity_indi_single/
-cp configuration_file_emcee_run_DS8_0p_2_activity_indi_single.log ./DS8_0p_2_activity_indi_single/
+# mkdir -p ./DS8_0p_2_activity_indi_single
+# cp DS8_0p_2_activity_indi.yaml ./DS8_0p_2_activity_indi_single/
+# cp configuration_file_emcee_run_DS8_0p_2_activity_indi_single.log ./DS8_0p_2_activity_indi_single/
 
 # Deactivate environment
 conda deactivate

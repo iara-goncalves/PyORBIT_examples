@@ -13,9 +13,9 @@
 ### -- specify that we want the job to get killed if it exceeds 2GB per core/slot -- 
 #BSUB -M 2GB
 ### -- set walltime limit: hh:mm -- 
-#BSUB -W 24:00
+#BSUB -W 48:00
 ### -- set the email address -- 
-#BSUB -u icogo@dtu.dk
+#BSUB -u jzhao@space.dtu.dk
 ### -- send notification at start -- 
 #BSUB -B 
 ### -- send notification at completion -- 
@@ -38,9 +38,9 @@ pyorbit_run emcee DS5_3p_ccfs.yaml > configuration_file_emcee_run_DS5_3p_ccfs_si
 pyorbit_results emcee DS5_3p_ccfs.yaml -all >> configuration_file_emcee_run_DS5_3p_ccfs_single.log
 
 # Create results directory and copy files
-mkdir -p ./DS5_3p_ccfs_single
-cp DS5_3p_ccfs.yaml ./DS5_3p_ccfs_single/
-cp configuration_file_emcee_run_DS5_3p_ccfs_single.log ./DS5_3p_ccfs_single/
+# mkdir -p ./DS5_3p_ccfs_single
+# cp DS5_3p_ccfs.yaml ./DS5_3p_ccfs_single/
+# cp configuration_file_emcee_run_DS5_3p_ccfs_single.log ./DS5_3p_ccfs_single/
 
 # Deactivate environment
 conda deactivate

@@ -24,23 +24,36 @@
 #BSUB -o /work2/lbuc/iara/GitHub/PyORBIT_examples/ESSP4/out_fiesta/Output_DS8_3p_3modes.out
 
 # Change to configuration directory
-cd /work2/lbuc/iara/GitHub/PyORBIT_examples/ESSP4/results_fiesta_emcee/DS8/DS8_3p_3modes
+cd /work2/lbuc/iara/GitHub/PyORBIT_examples/ESSP4/results_fiesta_emcee_kostas/DS8/DS8_3p_3modes
 
 # Clean up previous runs
 rm -f configuration_file_emcee_run_DS8_3p_3modes.log
 
-# Activate PyORBIT environment
-source /work2/lbuc/iara/anaconda3/etc/profile.d/conda.sh
-conda activate pyorbit
+
+
+# Set up environment paths for jinzhao's installations
+export CONDA_BASE="/work2/lbuc/iara/anaconda3"
+export PATH="$CONDA_BASE/bin:$PATH"
+
+# Initialize conda for any user
+source $CONDA_BASE/etc/profile.d/conda.sh
+
+# Activate PyORBIT environment using CORRECT FULL PATH
+conda activate /work2/lbuc/iara/conda_envs/pyorbit
+
+
+# # Activate PyORBIT environment
+# source /work2/lbuc/iara/anaconda3/etc/profile.d/conda.sh
+# conda activate pyorbit
 
 # Run PyORBIT analysis
 pyorbit_run emcee DS8_3p_3modes.yaml > configuration_file_emcee_run_DS8_3p_3modes.log
 pyorbit_results emcee DS8_3p_3modes.yaml -all >> configuration_file_emcee_run_DS8_3p_3modes.log
 
 # Create results directory and copy files
-mkdir -p ./DS8_3p_3modes
-cp DS8_3p_3modes.yaml ./DS8_3p_3modes/
-cp configuration_file_emcee_run_DS8_3p_3modes.log ./DS8_3p_3modes/
+# mkdir -p ./DS8_3p_3modes
+# cp DS8_3p_3modes.yaml ./DS8_3p_3modes/
+# cp configuration_file_emcee_run_DS8_3p_3modes.log ./DS8_3p_3modes/
 
 # Deactivate environment
 conda deactivate

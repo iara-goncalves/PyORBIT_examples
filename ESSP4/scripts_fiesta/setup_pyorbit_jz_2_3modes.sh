@@ -17,7 +17,7 @@ fiesta_configs=(2modes 3modes)  # FIESTA mode configurations
 
 # Base directories
 data_dir="/work2/lbuc/iara/GitHub/PyORBIT_examples/ESSP4/data"
-results_dir="/work2/lbuc/iara/GitHub/PyORBIT_examples/ESSP4/results_fiesta_emcee"
+results_dir="/work2/lbuc/iara/GitHub/PyORBIT_examples/ESSP4/results_fiesta_emcee_kostas"
 out_dir="/work2/lbuc/iara/GitHub/PyORBIT_examples/ESSP4/out_fiesta"
 
 # LSF configuration
@@ -140,7 +140,7 @@ EOF
         K: [0.001, 10.0]
         e: [0.00, 0.70]
       priors:
-        e: ['Gaussian', 0.1, 0.098]
+        e: ['BetaDistribution', 1.12, 3.09]
 EOF
         done
     fi
@@ -295,18 +295,31 @@ cd ${config_dir}
 # Clean up previous runs
 rm -f configuration_file_emcee_run_${job_name}.log
 
-# Activate PyORBIT environment
-source /work2/lbuc/iara/anaconda3/etc/profile.d/conda.sh
-conda activate pyorbit
+
+
+# Set up environment paths for jinzhao's installations
+export CONDA_BASE="/work2/lbuc/iara/anaconda3"
+export PATH="\$CONDA_BASE/bin:\$PATH"
+
+# Initialize conda for any user
+source \$CONDA_BASE/etc/profile.d/conda.sh
+
+# Activate PyORBIT environment using CORRECT FULL PATH
+conda activate /work2/lbuc/iara/conda_envs/pyorbit
+
+
+# # Activate PyORBIT environment
+# source /work2/lbuc/iara/anaconda3/etc/profile.d/conda.sh
+# conda activate pyorbit
 
 # Run PyORBIT analysis
 pyorbit_run emcee ${yaml_name} > configuration_file_emcee_run_${job_name}.log
 pyorbit_results emcee ${yaml_name} -all >> configuration_file_emcee_run_${job_name}.log
 
 # Create results directory and copy files
-mkdir -p ./${job_name}
-cp ${yaml_name} ./${job_name}/
-cp configuration_file_emcee_run_${job_name}.log ./${job_name}/
+# mkdir -p ./${job_name}
+# cp ${yaml_name} ./${job_name}/
+# cp configuration_file_emcee_run_${job_name}.log ./${job_name}/
 
 # Deactivate environment
 conda deactivate

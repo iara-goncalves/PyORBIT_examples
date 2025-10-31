@@ -28,14 +28,10 @@ echo "ccfs (FWHM, Contrast):"
 bjobs | grep -E "(DS[1-9]_[0-3]p_ccfs_single)"
 
 echo ""
-echo "white_noise (RV only):"
-bjobs | grep -E "(DS[1-9]_[1-3]p_white_noise_single)"
-
-echo ""
 echo "Job summary:"
-total_jobs=$(bjobs | grep -c -E "(DS[1-9]_[0-3]p_(2_activity_indi|4_activity_indi|5_activity_indi|ccfs|white_noise)_single)")
-running_jobs=$(bjobs | grep RUN | grep -c -E "(DS[1-9]_[0-3]p_(2_activity_indi|4_activity_indi|5_activity_indi|ccfs|white_noise)_single)")
-pending_jobs=$(bjobs | grep PEND | grep -c -E "(DS[1-9]_[0-3]p_(2_activity_indi|4_activity_indi|5_activity_indi|ccfs|white_noise)_single)")
+total_jobs=$(bjobs | grep -c -E "(DS[1-9]_[0-3]p_(2_activity_indi|4_activity_indi|5_activity_indi|ccfs)_single)")
+running_jobs=$(bjobs | grep RUN | grep -c -E "(DS[1-9]_[0-3]p_(2_activity_indi|4_activity_indi|5_activity_indi|ccfs)_single)")
+pending_jobs=$(bjobs | grep PEND | grep -c -E "(DS[1-9]_[0-3]p_(2_activity_indi|4_activity_indi|5_activity_indi|ccfs)_single)")
 
 echo "Total PyORBIT single file jobs: $total_jobs"
 echo "Running: $running_jobs"
@@ -43,7 +39,7 @@ echo "Pending: $pending_jobs"
 
 echo ""
 echo "Jobs by configuration:"
-for config in 2_activity_indi 4_activity_indi 5_activity_indi ccfs white_noise; do
+for config in 2_activity_indi 4_activity_indi 5_activity_indi ccfs; do
     config_count=$(bjobs | grep -c -E "(DS[1-9]_[0-3]p_${config}_single)")
     if [ $config_count -gt 0 ]; then
         echo "  $config: $config_count jobs"
@@ -53,7 +49,7 @@ done
 echo ""
 echo "Jobs by planet configuration:"
 for planet in 0p 1p 2p 3p; do
-    planet_count=$(bjobs | grep -c -E "(DS[1-9]_${planet}_(2_activity_indi|4_activity_indi|5_activity_indi|ccfs|white_noise)_single)")
+    planet_count=$(bjobs | grep -c -E "(DS[1-9]_${planet}_(2_activity_indi|4_activity_indi|5_activity_indi|ccfs)_single)")
     if [ $planet_count -gt 0 ]; then
         echo "  $planet: $planet_count jobs"
     fi
@@ -62,7 +58,7 @@ done
 echo ""
 echo "Jobs by dataset:"
 for ds in DS1 DS2 DS3 DS4 DS5 DS6 DS7 DS8 DS9; do
-    ds_count=$(bjobs | grep -c -E "(${ds}_[0-3]p_(2_activity_indi|4_activity_indi|5_activity_indi|ccfs|white_noise)_single)")
+    ds_count=$(bjobs | grep -c -E "(${ds}_[0-3]p_(2_activity_indi|4_activity_indi|5_activity_indi|ccfs)_single)")
     if [ $ds_count -gt 0 ]; then
         echo "  $ds: $ds_count jobs"
     fi
