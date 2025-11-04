@@ -1,9 +1,0 @@
-Dataset,Configuration,Planets,MAP BIC,ΔBIC,Convergence %,Max GR,Preferred_BIC,File
-DS2,2_activity_indi,1p,4530.45,0.4399999999995998,0.0,1.299589,False,configuration_file_emcee_run_DS2_1p_2_activity_indi.log
-DS2,2_activity_indi,2p,4530.01,0.0,0.0,1.356022,True,configuration_file_emcee_run_DS2_2p_2_activity_indi.log
-DS2,4_activity_indi,1p,5575.28,0.0,26.027397260273972,1.350457,True,configuration_file_emcee_run_DS2_1p_4_activity_indi.log
-DS2,4_activity_indi,2p,5783.93,208.65000000000055,73.07692307692307,1.159437,False,configuration_file_emcee_run_DS2_2p_4_activity_indi.log
-DS2,5_activity_indi,1p,5972.95,0.0,26.744186046511626,1.940578,True,configuration_file_emcee_run_DS2_1p_5_activity_indi.log
-DS2,5_activity_indi,2p,9818.17,3845.2200000000003,95.6043956043956,1.125472,False,configuration_file_emcee_run_DS2_2p_5_activity_indi.log
-DS2,ccfs,1p,7311.09,38.42000000000007,0.0,1.318217,False,configuration_file_emcee_run_DS2_1p_ccfs.log
-DS2,ccfs,2p,7272.67,0.0,1.9230769230769231,1.288398,True,configuration_file_emcee_run_DS2_2p_ccfs.log

@@ -1,2 +1,0 @@
-Dataset,Configuration,Planets,MAP BIC,ΔBIC,Convergence %,Max GR,Preferred_BIC,File
-DS1,white_noise,1p,1084.44,0.0,0,,True,configuration_file_emcee_run_DS1_1p_white_noise.log

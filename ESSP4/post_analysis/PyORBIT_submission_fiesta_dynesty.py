@@ -1,5 +1,5 @@
 """
-PyORBIT CSV Export for ESSP Submission - Multiple Configurations
+PyORBIT CSV Export for ESSP Submission - FIESTA Dynesty Configurations
 Only process best models from the selection CSV
 """
 
@@ -9,30 +9,12 @@ Only process best models from the selection CSV
 import numpy as np
 import pandas as pd
 import os
-import matplotlib.pyplot as plt
 import glob
 import re
 
 # ============================================================================
 # CONFIGURATION SECTION
 # ============================================================================
-
-# Define activity indicator configurations
-def get_activity_config(config_type):
-    """Return activity indicators based on configuration type"""
-    
-    configs = {
-        '2_activity_indi': ['BISdata', 'FWHMdata'],
-        '4_activity_indi': ['BISdata', 'FWHMdata', 'Contrastdata', 'Halphadata'],
-        '5_activity_indi': ['BISdata', 'FWHMdata', 'Contrastdata', 'Halphadata', 'CaIIdata'],
-        'ccfs': ['FWHMdata', 'Contrastdata'],
-        'white_noise': []  # No activity indicators
-    }
-    
-    if config_type not in configs:
-        raise ValueError(f"Unknown configuration: {config_type}")
-    
-    return configs[config_type]
 
 def parse_log_file(log_file_path):
     """Parse the log file to extract hyperparameters from the LAST median parameter section"""
@@ -112,7 +94,7 @@ def parse_log_file(log_file_path):
             # Extract parameter values
             elif current_dataset:
                 parts = line_stripped.split()
-                if len(parts) == 2:
+                if len(parts) >= 2:
                     try:
                         param_name = parts[0]
                         param_value = float(parts[1])
@@ -136,49 +118,29 @@ def parse_log_file(log_file_path):
         print(f"        Error parsing log file: {e}")
         return {}
 
-def extract_csv_name_components(subdir_name):
-    """
-    Extract components from subdirectory name for CSV naming (WITHOUT planet config)
-    Example: DS1_3p_2_activity_indi_multiple -> DS1, 2_activity_indi
-    """
-    # Remove '_multiple' suffix if present
-    base_name = subdir_name.replace('_multiple', '')
-    
-    # Split by underscore
-    parts = base_name.split('_')
-    
-    # First part is dataset (DS1, DS2, etc.)
-    dataset = parts[0]
-    
-    # Skip the planet config (0p, 1p, 2p, 3p) - it's parts[1]
-    # Rest is the activity config
-    activity_config = '_'.join(parts[2:])
-    
-    return dataset, activity_config
-
 # ============================================================================
 # MAIN PROCESSING LOOP
 # ============================================================================
 
 # Base directories
-base_results_dir = '/work2/lbuc/iara/GitHub/PyORBIT_examples/ESSP4/results_multiple'
-output_base_dir = '/work2/lbuc/iara/GitHub/PyORBIT_examples/ESSP4/submission_csv_files/results_multiple'
-best_models_csv = '/work2/lbuc/jzhao/PyORBIT_ESSP/post_analysis/results_multiple.csv'
+base_results_dir = '/work2/lbuc/iara/GitHub/PyORBIT_examples/ESSP4/results_fiesta_dynesty_1026'
+output_base_dir = '/work2/lbuc/iara/GitHub/PyORBIT_examples/ESSP4/submission_csv_files/results_fiesta_dynesty'
+best_models_csv = '/work2/lbuc/jzhao/PyORBIT_ESSP/post_analysis/results_fiesta_dynesty_1026.csv'
 
 # Common settings
 datasets_list = ['RVdata_expres', 'RVdata_harps', 'RVdata_neid']
-instruments = ['expres', 'harps', 'neid']
+instruments = ['expres', 'harps', 'harpsn', 'neid']
 activity_model = 'gp_multidimensional'
 reference_planet = 'b'
 group_name = "DTU-Padova-PSU"
-method_name = "emcee_multiple"
+method_name = "dynesty_multiple"
 
 # Create output base directory
 if not os.path.exists(output_base_dir):
     os.makedirs(output_base_dir)
 
 print("="*80)
-print("PROCESSING BEST MULTIPLE MODELS")
+print("PROCESSING BEST FIESTA DYNESTY MODELS")
 print("="*80)
 
 # Read the best models CSV
@@ -192,7 +154,10 @@ except Exception as e:
 
 # Process each best model
 for idx, row in best_models_df.iterrows():
-    # Extract configuration path from the CSV
+    # Extract information from the CSV
+    # The CSV contains full paths, so we need to extract the configuration from the path
+    
+    # Try to get the path from the CSV
     config_path = None
     for col in best_models_df.columns:
         if isinstance(row[col], str) and 'DS' in str(row[col]) and '/' in str(row[col]):
@@ -203,66 +168,61 @@ for idx, row in best_models_df.iterrows():
         print(f"  ✗ Could not determine configuration path from row {idx}")
         continue
     
-    # Extract the subdirectory name from the path
-    # Example: /work2/.../results_multiple/DS1/DS1_3p/DS1_3p_2_activity_indi_multiple
-    subdir_name = os.path.basename(config_path)
+    # Extract the configuration name from the path
+    # Example: /work2/lbuc/iara/GitHub/PyORBIT_examples/ESSP4/results_fiesta_dynesty_1026/DS1/DS1_1p_2modes
+    # We want: DS1_1p_2modes
+    config_name = os.path.basename(config_path)
     
-    # Extract dataset name from the subdir_name
-    dataset_match = re.match(r'(DS\d+)_', subdir_name)
+    # Extract dataset name (e.g., DS1, DS2, DS3) from the config_name
+    dataset_match = re.match(r'(DS\d+)_', config_name)
     if not dataset_match:
-        print(f"  ✗ Could not extract dataset name from: {subdir_name}")
+        print(f"  ✗ Could not extract dataset name from: {config_name}")
         continue
     
     dataset_name = dataset_match.group(1)
     
-    print(f"\nProcessing: {subdir_name}")
+    print(f"\nProcessing: {config_name}")
     
     # Create output directory for this dataset
     dataset_output_dir = output_base_dir
     if not os.path.exists(dataset_output_dir):
         os.makedirs(dataset_output_dir)
     
-    # Extract configuration type from subdirectory name
-    if 'white_noise' in subdir_name:
-        config_type = 'white_noise'
-    elif '5_activity_indi' in subdir_name:
-        config_type = '5_activity_indi'
-    elif '4_activity_indi' in subdir_name:
-        config_type = '4_activity_indi'
-    elif '2_activity_indi' in subdir_name:
-        config_type = '2_activity_indi'
-    elif 'ccfs' in subdir_name:
-        config_type = 'ccfs'
+    # Extract number of modes from config_name
+    if '2modes' in config_name:
+        n_modes = 2
+        modes_str = '2modes'
+    elif '3modes' in config_name:
+        n_modes = 3
+        modes_str = '3modes'
     else:
-        print(f"  ✗ Unknown configuration type in {subdir_name}")
+        print(f"  ✗ Unknown mode configuration in {config_name}")
         continue
     
-    # Get activity indicators
-    activity_indicators = get_activity_config(config_type)
+    # Extract planet configuration (but won't use in filename)
+    if '0p' in config_name:
+        is_0p_config = True
+    elif '1p' in config_name or '2p' in config_name or '3p' in config_name:
+        is_0p_config = False
+    else:
+        print(f"  ✗ Unknown planet configuration in {config_name}")
+        continue
     
-    # Check if this is a 0p configuration
-    is_0p_config = '0p' in subdir_name
-    
-    # Build paths - use the actual path from CSV
-    subdir = os.path.dirname(config_path)  # Get parent directory
-    model_files_dir = os.path.join(config_path, subdir_name, 'emcee_plot', 'model_files')
+    # Build paths - the structure is DS2/DS2_3p_3modes/DS2_3p_3modes/dynesty_plot/model_files
+    config_dir = os.path.join(base_results_dir, dataset_name, config_name)
+    model_files_dir = os.path.join(config_dir, config_name, 'dynesty_plot', 'model_files')
     
     if not os.path.exists(model_files_dir):
         print(f"  ✗ Model files directory not found: {model_files_dir}")
         continue
     
     # ============================================================================
-    # EXTRACT CSV NAME COMPONENTS (WITHOUT planet config)
-    # ============================================================================
-    
-    ds_name, activity_cfg = extract_csv_name_components(subdir_name)
-    
-    # ============================================================================
     # PROCESS RV DATA
     # ============================================================================
     
     try:
-        all_data = []
+        # Collect all data by timestamp
+        data_by_time = {}
         
         for dataset in datasets_list:
             instrument = dataset.split('_')[1]
@@ -279,47 +239,20 @@ for idx, row in best_models_df.iterrows():
                 RV_activity = activity_mod[:, 6]
                 eRV_activity = np.sqrt(activity_mod[:, 9]**2 + activity_mod[:, 12]**2)
                 
-                # Load activity indicators
-                activity_data = {}
-                for indicator in activity_indicators:
-                    try:
-                        activity_ind_file = os.path.join(model_files_dir, f"{indicator}_{instrument}_{activity_model}.dat")
-                        if os.path.exists(activity_ind_file):
-                            activity_ind_mod = np.genfromtxt(activity_ind_file, skip_header=1)
-                            
-                            activity_data[indicator] = {
-                                'values': activity_ind_mod[:, 6],
-                                'errors': np.sqrt(activity_ind_mod[:, 9]**2 + activity_ind_mod[:, 12]**2)
-                            }
-                    except:
-                        continue
-                
-                # Create rows with NaN for RV_C and eRV_C
+                # Store RV data by timestamp
                 for i in range(len(time_emjd)):
-                    row_data = {
-                        'Time [eMJD]': time_emjd[i],
-                        'RV_C': np.nan,
-                        'eRV_C': np.nan,
-                        'RV_A': RV_activity[i],
-                        'eRV_A': eRV_activity[i]
-                    }
-                    
-                    for indicator in activity_indicators:
-                        if indicator in activity_data:
-                            if 'BIS' in indicator:
-                                unit = ' [m/s]'
-                            elif 'FWHM' in indicator:
-                                unit = ' [m/s]'
-                            else:
-                                unit = ''
-                            
-                            row_data[f'{indicator}{unit}'] = activity_data[indicator]['values'][i]
-                            row_data[f'e{indicator}{unit}'] = activity_data[indicator]['errors'][i]
-                    
-                    all_data.append(row_data)
+                    t = time_emjd[i]
+                    if t not in data_by_time:
+                        data_by_time[t] = {
+                            'Time [eMJD]': t,
+                            'RV_C': np.nan,
+                            'eRV_C': np.nan,
+                            'RV_A': RV_activity[i],
+                            'eRV_A': eRV_activity[i]
+                        }
             
             else:
-                # For non-0p configurations, process as before
+                # For non-0p configurations
                 RV_file = os.path.join(model_files_dir, f'{dataset}_radial_velocities_{reference_planet}.dat')
                 if not os.path.exists(RV_file):
                     continue
@@ -342,80 +275,95 @@ for idx, row in best_models_df.iterrows():
                 eRV_clean = np.sqrt(RV_mod[:, 9]**2 + RV_mod[:, 12]**2)
                 eRV_activity = np.sqrt(activity_mod[:, 9]**2 + activity_mod[:, 12]**2)
                 
-                activity_data = {}
-                for indicator in activity_indicators:
-                    try:
-                        activity_ind_file = os.path.join(model_files_dir, f"{indicator}_{instrument}_{activity_model}.dat")
-                        if os.path.exists(activity_ind_file):
-                            activity_ind_mod = np.genfromtxt(activity_ind_file, skip_header=1)
-                            
-                            activity_data[indicator] = {
-                                'values': activity_ind_mod[:, 6],
-                                'errors': np.sqrt(activity_ind_mod[:, 9]**2 + activity_ind_mod[:, 12]**2)
-                            }
-                    except:
-                        continue
-                
+                # Store RV data by timestamp
                 for i in range(len(time_emjd)):
-                    row_data = {
-                        'Time [eMJD]': time_emjd[i],
-                        'RV_C': RV_clean[i],
-                        'eRV_C': eRV_clean[i],
-                        'RV_A': RV_activity[i],
-                        'eRV_A': eRV_activity[i]
-                    }
-                    
-                    for indicator in activity_indicators:
-                        if indicator in activity_data:
-                            if 'BIS' in indicator:
-                                unit = ' [m/s]'
-                            elif 'FWHM' in indicator:
-                                unit = ' [m/s]'
-                            else:
-                                unit = ''
-                            
-                            row_data[f'{indicator}{unit}'] = activity_data[indicator]['values'][i]
-                            row_data[f'e{indicator}{unit}'] = activity_data[indicator]['errors'][i]
-                    
-                    all_data.append(row_data)
+                    t = time_emjd[i]
+                    if t not in data_by_time:
+                        data_by_time[t] = {
+                            'Time [eMJD]': t,
+                            'RV_C': RV_clean[i],
+                            'eRV_C': eRV_clean[i],
+                            'RV_A': RV_activity[i],
+                            'eRV_A': eRV_activity[i]
+                        }
         
-        if not all_data:
+        # Now load FIESTA modes as activity indicators - COMBINED BY MODE
+        for mode_num in range(1, n_modes + 1):
+            mode_column = f"FIESTAdata_mode{mode_num}"
+            error_column = f"eFIESTAdata_mode{mode_num}"
+            
+            # Try each instrument for this mode
+            for inst in instruments:
+                fiesta_name = f"FIESTAdata_{inst}_mode{mode_num}"
+                try:
+                    fiesta_file = os.path.join(model_files_dir, f"{fiesta_name}_{activity_model}.dat")
+                    if os.path.exists(fiesta_file):
+                        fiesta_mod = np.genfromtxt(fiesta_file, skip_header=1)
+                        
+                        fiesta_times = fiesta_mod[:, 0]
+                        fiesta_values = fiesta_mod[:, 6]  # Activity indicator model values
+                        fiesta_errors = np.sqrt(fiesta_mod[:, 9]**2 + fiesta_mod[:, 12]**2)
+                        
+                        # Add FIESTA data to matching timestamps (using combined column name)
+                        for i in range(len(fiesta_times)):
+                            t = fiesta_times[i]
+                            if t in data_by_time:
+                                # Add as activity indicator columns (without instrument name)
+                                data_by_time[t][mode_column] = fiesta_values[i]
+                                data_by_time[t][error_column] = fiesta_errors[i]
+                            else:
+                                # Create new entry if timestamp doesn't exist yet
+                                data_by_time[t] = {
+                                    'Time [eMJD]': t,
+                                    'RV_C': np.nan,
+                                    'eRV_C': np.nan,
+                                    'RV_A': np.nan,
+                                    'eRV_A': np.nan,
+                                    mode_column: fiesta_values[i],
+                                    error_column: fiesta_errors[i]
+                                }
+                except Exception as e:
+                    # Silently continue if file doesn't exist for this instrument
+                    continue
+        
+        if not data_by_time:
             print(f"  ✗ No data found")
             continue
         
+        # Convert to DataFrame
+        all_data = list(data_by_time.values())
         df = pd.DataFrame(all_data)
         df = df.sort_values('Time [eMJD]').reset_index(drop=True)
         
+        # Organize columns: Time, RV_C, eRV_C, RV_A, eRV_A, then FIESTA modes
         required_columns = ['Time [eMJD]', 'RV_C', 'eRV_C', 'RV_A', 'eRV_A']
-        indicator_columns = [col for col in df.columns if col not in required_columns]
         
-        activity_pairs = []
-        for indicator in sorted(activity_indicators):
-            data_cols = [col for col in indicator_columns if col.startswith(f'{indicator}') and not col.startswith(f'e{indicator}')]
-            error_cols = [col for col in indicator_columns if col.startswith(f'e{indicator}')]
-            
-            for data_col in data_cols:
-                activity_pairs.append(data_col)
-                # Match the error column
-                if 'BIS' in indicator or 'FWHM' in indicator:
-                    error_col = data_col.replace(f'{indicator}', f'e{indicator}')
-                else:
-                    error_col = f'e{data_col}'
-                if error_col in error_cols:
-                    activity_pairs.append(error_col)
+        # Add FIESTA mode columns in order
+        fiesta_columns = []
+        for mode_num in range(1, n_modes + 1):
+            mode_col = f"FIESTAdata_mode{mode_num}"
+            error_col = f"eFIESTAdata_mode{mode_num}"
+            if mode_col in df.columns:
+                fiesta_columns.append(mode_col)
+            if error_col in df.columns:
+                fiesta_columns.append(error_col)
         
-        final_columns = required_columns + activity_pairs
+        final_columns = required_columns + fiesta_columns
+        
+        # Only include columns that exist in the dataframe
+        final_columns = [col for col in final_columns if col in df.columns]
         df = df[final_columns]
         
         numerical_columns = df.select_dtypes(include=[np.number]).columns
         df[numerical_columns] = df[numerical_columns].round(6)
         
-        # NEW CSV NAMING FORMAT (WITHOUT planet config)
-        csv_filename = f"{ds_name}_{group_name}_{method_name}_{activity_cfg}_results.csv"
+        # CSV NAMING FORMAT (WITHOUT planet config): DS1_DTU-Padova-PSU_dynesty_2modes_results.csv
+        csv_filename = f"{dataset_name}_{group_name}_{method_name}_{modes_str}_results.csv"
         csv_filepath = os.path.join(dataset_output_dir, csv_filename)
         df.to_csv(csv_filepath, index=False)
         
         print(f"  ✓ Results CSV saved: {csv_filename} ({len(df)} observations)")
+        print(f"     Columns: {', '.join(df.columns.tolist())}")
         
     except Exception as e:
         print(f"  ✗ Error processing RV data: {e}")
@@ -424,11 +372,12 @@ for idx, row in best_models_df.iterrows():
         continue
     
     # ============================================================================
-    # PROCESS HYPERPARAMETERS FOR THIS CONFIGURATION
+    # PROCESS HYPERPARAMETERS
     # ============================================================================
-
-    log_file = os.path.join(config_path, f'configuration_file_emcee_run_{subdir_name}.log')
-
+    
+    # Log file path
+    log_file = os.path.join(config_dir, f'configuration_file_emcee_run_{config_name}.log')
+    
     if os.path.exists(log_file):
         hyperparams = parse_log_file(log_file)
         
@@ -440,21 +389,21 @@ for idx, row in best_models_df.iterrows():
             common_pdec = hyperparams.get('activity_Pdec', np.nan)
             common_oamp = hyperparams.get('activity_Oamp', np.nan)
             
-            # Extract parameters for each instrument/dataset combination
-            for instrument in instruments:
-                for indicator in activity_indicators:
-                    dataset_name_full = f"{indicator}_{instrument}"
+            # Extract parameters for each FIESTA mode/instrument combination
+            for mode_num in range(1, n_modes + 1):
+                for inst in instruments:
+                    fiesta_name = f"FIESTAdata_{inst}_mode{mode_num}"
                     
                     param_row = {
-                        'name': dataset_name_full,
+                        'name': fiesta_name,
                         'Prot': common_prot,
                         'Pdec': common_pdec,
                         'Oamp': common_oamp
                     }
                     
                     # Try to find rot_amp and con_amp
-                    rot_amp_key = f"{indicator}_{instrument}_gp_multidimensional_rot_amp"
-                    con_amp_key = f"{indicator}_{instrument}_gp_multidimensional_con_amp"
+                    rot_amp_key = f"{fiesta_name}_gp_multidimensional_rot_amp"
+                    con_amp_key = f"{fiesta_name}_gp_multidimensional_con_amp"
                     
                     param_row['rot_amp'] = hyperparams.get(rot_amp_key, np.nan)
                     param_row['con_amp'] = hyperparams.get(con_amp_key, np.nan)
@@ -470,16 +419,18 @@ for idx, row in best_models_df.iterrows():
                     if col in config_hyperparams_df.columns:
                         config_hyperparams_df[col] = config_hyperparams_df[col].round(6)
                 
-                # NEW CSV NAMING FORMAT (WITHOUT planet config)
-                hyperparams_filename = f"{ds_name}_{group_name}_{method_name}_{activity_cfg}_hyperparameters.csv"
+                # CSV NAMING FORMAT (WITHOUT planet config): DS1_DTU-Padova-PSU_dynesty_2modes_hyperparameters.csv
+                hyperparams_filename = f"{dataset_name}_{group_name}_{method_name}_{modes_str}_hyperparameters.csv"
                 hyperparams_filepath = os.path.join(dataset_output_dir, hyperparams_filename)
                 config_hyperparams_df.to_csv(hyperparams_filepath, index=False)
                 
                 print(f"  ✓ Hyperparameters CSV saved: {hyperparams_filename}")
+        else:
+            print(f"  ✗ No hyperparameters found in log file")
     else:
         print(f"  ✗ Log file not found: {log_file}")
 
 print("\n" + "="*80)
-print("ALL BEST MULTIPLE MODELS PROCESSED!")
+print("ALL BEST FIESTA DYNESTY MODELS PROCESSED!")
 print("="*80)
 print(f"Results saved in: {output_base_dir}")

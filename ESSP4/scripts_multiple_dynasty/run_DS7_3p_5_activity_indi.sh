@@ -5,7 +5,7 @@
 ### -- set the job Name -- 
 #BSUB -J DS7_3p_5_activity_indi
 ### -- ask for number of cores (default: 1) -- 
-#BSUB -n 16
+#BSUB -n 36
 ### -- specify that the cores must be on the same host -- 
 #BSUB -R "span[hosts=1]"
 ### -- specify that we need 2GB of memory per core/slot -- 
@@ -38,9 +38,9 @@ pyorbit_run dynesty DS7_3p_5_activity_indi.yaml > configuration_file_emcee_run_D
 pyorbit_results dynesty DS7_3p_5_activity_indi.yaml -all >> configuration_file_emcee_run_DS7_3p_5_activity_indi.log
 
 # Create results directory and copy files
-mkdir -p ./DS7_3p_5_activity_indi
-cp DS7_3p_5_activity_indi.yaml ./DS7_3p_5_activity_indi/
-cp configuration_file_emcee_run_DS7_3p_5_activity_indi.log ./DS7_3p_5_activity_indi/
+# mkdir -p ./DS7_3p_5_activity_indi
+# cp DS7_3p_5_activity_indi.yaml ./DS7_3p_5_activity_indi/
+# cp configuration_file_emcee_run_DS7_3p_5_activity_indi.log ./DS7_3p_5_activity_indi/
 
 # Deactivate environment
 conda deactivate

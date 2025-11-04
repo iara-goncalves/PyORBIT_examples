@@ -1,0 +1,102 @@
+================================================================================
+PROCESSING BEST FIESTA EMCEE MODELS
+================================================================================
+
+Loaded best models CSV: /work2/lbuc/jzhao/PyORBIT_ESSP/post_analysis/results_fiesta_emcee.csv
+Found 18 best model configurations
+
+
+Processing: DS1_2p_2modes
+  ✓ Results CSV saved: DS1_DTU-Padova-PSU_emcee_2modes_results.csv (288 observations)
+     Columns: Time [eMJD], RV_C, eRV_C, RV_A, eRV_A, FIESTAdata_mode1, eFIESTAdata_mode1, FIESTAdata_mode2, eFIESTAdata_mode2
+  ✓ Hyperparameters CSV saved: DS1_DTU-Padova-PSU_emcee_2modes_hyperparameters.csv
+
+Processing: DS1_1p_3modes
+  ✓ Results CSV saved: DS1_DTU-Padova-PSU_emcee_3modes_results.csv (288 observations)
+     Columns: Time [eMJD], RV_C, eRV_C, RV_A, eRV_A, FIESTAdata_mode1, eFIESTAdata_mode1, FIESTAdata_mode2, eFIESTAdata_mode2, FIESTAdata_mode3, eFIESTAdata_mode3
+  ✓ Hyperparameters CSV saved: DS1_DTU-Padova-PSU_emcee_3modes_hyperparameters.csv
+
+Processing: DS2_2p_2modes
+  ✓ Results CSV saved: DS2_DTU-Padova-PSU_emcee_2modes_results.csv (323 observations)
+     Columns: Time [eMJD], RV_C, eRV_C, RV_A, eRV_A, FIESTAdata_mode1, eFIESTAdata_mode1, FIESTAdata_mode2, eFIESTAdata_mode2
+  ✓ Hyperparameters CSV saved: DS2_DTU-Padova-PSU_emcee_2modes_hyperparameters.csv
+
+Processing: DS2_2p_3modes
+  ✓ Results CSV saved: DS2_DTU-Padova-PSU_emcee_3modes_results.csv (323 observations)
+     Columns: Time [eMJD], RV_C, eRV_C, RV_A, eRV_A, FIESTAdata_mode1, eFIESTAdata_mode1, FIESTAdata_mode2, eFIESTAdata_mode2, FIESTAdata_mode3, eFIESTAdata_mode3
+  ✓ Hyperparameters CSV saved: DS2_DTU-Padova-PSU_emcee_3modes_hyperparameters.csv
+
+Processing: DS3_2p_2modes
+  ✓ Results CSV saved: DS3_DTU-Padova-PSU_emcee_2modes_results.csv (323 observations)
+     Columns: Time [eMJD], RV_C, eRV_C, RV_A, eRV_A, FIESTAdata_mode1, eFIESTAdata_mode1, FIESTAdata_mode2, eFIESTAdata_mode2
+  ✓ Hyperparameters CSV saved: DS3_DTU-Padova-PSU_emcee_2modes_hyperparameters.csv
+
+Processing: DS3_1p_3modes
+  ✓ Results CSV saved: DS3_DTU-Padova-PSU_emcee_3modes_results.csv (323 observations)
+     Columns: Time [eMJD], RV_C, eRV_C, RV_A, eRV_A, FIESTAdata_mode1, eFIESTAdata_mode1, FIESTAdata_mode2, eFIESTAdata_mode2, FIESTAdata_mode3, eFIESTAdata_mode3
+  ✓ Hyperparameters CSV saved: DS3_DTU-Padova-PSU_emcee_3modes_hyperparameters.csv
+
+Processing: DS4_2p_2modes
+  ✓ Results CSV saved: DS4_DTU-Padova-PSU_emcee_2modes_results.csv (279 observations)
+     Columns: Time [eMJD], RV_C, eRV_C, RV_A, eRV_A, FIESTAdata_mode1, eFIESTAdata_mode1, FIESTAdata_mode2, eFIESTAdata_mode2
+  ✓ Hyperparameters CSV saved: DS4_DTU-Padova-PSU_emcee_2modes_hyperparameters.csv
+
+Processing: DS4_1p_3modes
+  ✓ Results CSV saved: DS4_DTU-Padova-PSU_emcee_3modes_results.csv (279 observations)
+     Columns: Time [eMJD], RV_C, eRV_C, RV_A, eRV_A, FIESTAdata_mode1, eFIESTAdata_mode1, FIESTAdata_mode2, eFIESTAdata_mode2, FIESTAdata_mode3, eFIESTAdata_mode3
+  ✓ Hyperparameters CSV saved: DS4_DTU-Padova-PSU_emcee_3modes_hyperparameters.csv
+
+Processing: DS5_3p_2modes
+  ✓ Results CSV saved: DS5_DTU-Padova-PSU_emcee_2modes_results.csv (281 observations)
+     Columns: Time [eMJD], RV_C, eRV_C, RV_A, eRV_A, FIESTAdata_mode1, eFIESTAdata_mode1, FIESTAdata_mode2, eFIESTAdata_mode2
+  ✓ Hyperparameters CSV saved: DS5_DTU-Padova-PSU_emcee_2modes_hyperparameters.csv
+
+Processing: DS5_1p_3modes
+  ✓ Results CSV saved: DS5_DTU-Padova-PSU_emcee_3modes_results.csv (281 observations)
+     Columns: Time [eMJD], RV_C, eRV_C, RV_A, eRV_A, FIESTAdata_mode1, eFIESTAdata_mode1, FIESTAdata_mode2, eFIESTAdata_mode2, FIESTAdata_mode3, eFIESTAdata_mode3
+  ✓ Hyperparameters CSV saved: DS5_DTU-Padova-PSU_emcee_3modes_hyperparameters.csv
+
+Processing: DS6_0p_2modes
+  ✓ Results CSV saved: DS6_DTU-Padova-PSU_emcee_2modes_results.csv (321 observations)
+     Columns: Time [eMJD], RV_C, eRV_C, RV_A, eRV_A, FIESTAdata_mode1, eFIESTAdata_mode1, FIESTAdata_mode2, eFIESTAdata_mode2
+  ✓ Hyperparameters CSV saved: DS6_DTU-Padova-PSU_emcee_2modes_hyperparameters.csv
+
+Processing: DS6_3p_3modes
+  ✓ Results CSV saved: DS6_DTU-Padova-PSU_emcee_3modes_results.csv (321 observations)
+     Columns: Time [eMJD], RV_C, eRV_C, RV_A, eRV_A, FIESTAdata_mode1, eFIESTAdata_mode1, FIESTAdata_mode2, eFIESTAdata_mode2, FIESTAdata_mode3, eFIESTAdata_mode3
+  ✓ Hyperparameters CSV saved: DS6_DTU-Padova-PSU_emcee_3modes_hyperparameters.csv
+
+Processing: DS7_2p_2modes
+  ✓ Results CSV saved: DS7_DTU-Padova-PSU_emcee_2modes_results.csv (290 observations)
+     Columns: Time [eMJD], RV_C, eRV_C, RV_A, eRV_A, FIESTAdata_mode1, eFIESTAdata_mode1, FIESTAdata_mode2, eFIESTAdata_mode2
+  ✓ Hyperparameters CSV saved: DS7_DTU-Padova-PSU_emcee_2modes_hyperparameters.csv
+
+Processing: DS7_2p_3modes
+  ✓ Results CSV saved: DS7_DTU-Padova-PSU_emcee_3modes_results.csv (290 observations)
+     Columns: Time [eMJD], RV_C, eRV_C, RV_A, eRV_A, FIESTAdata_mode1, eFIESTAdata_mode1, FIESTAdata_mode2, eFIESTAdata_mode2, FIESTAdata_mode3, eFIESTAdata_mode3
+  ✓ Hyperparameters CSV saved: DS7_DTU-Padova-PSU_emcee_3modes_hyperparameters.csv
+
+Processing: DS8_1p_2modes
+  ✓ Results CSV saved: DS8_DTU-Padova-PSU_emcee_2modes_results.csv (324 observations)
+     Columns: Time [eMJD], RV_C, eRV_C, RV_A, eRV_A, FIESTAdata_mode1, eFIESTAdata_mode1, FIESTAdata_mode2, eFIESTAdata_mode2
+  ✓ Hyperparameters CSV saved: DS8_DTU-Padova-PSU_emcee_2modes_hyperparameters.csv
+
+Processing: DS8_1p_3modes
+  ✓ Results CSV saved: DS8_DTU-Padova-PSU_emcee_3modes_results.csv (324 observations)
+     Columns: Time [eMJD], RV_C, eRV_C, RV_A, eRV_A, FIESTAdata_mode1, eFIESTAdata_mode1, FIESTAdata_mode2, eFIESTAdata_mode2, FIESTAdata_mode3, eFIESTAdata_mode3
+  ✓ Hyperparameters CSV saved: DS8_DTU-Padova-PSU_emcee_3modes_hyperparameters.csv
+
+Processing: DS9_1p_2modes
+  ✓ Results CSV saved: DS9_DTU-Padova-PSU_emcee_2modes_results.csv (241 observations)
+     Columns: Time [eMJD], RV_C, eRV_C, RV_A, eRV_A, FIESTAdata_mode1, eFIESTAdata_mode1, FIESTAdata_mode2, eFIESTAdata_mode2
+  ✓ Hyperparameters CSV saved: DS9_DTU-Padova-PSU_emcee_2modes_hyperparameters.csv
+
+Processing: DS9_3p_3modes
+  ✓ Results CSV saved: DS9_DTU-Padova-PSU_emcee_3modes_results.csv (241 observations)
+     Columns: Time [eMJD], RV_C, eRV_C, RV_A, eRV_A, FIESTAdata_mode1, eFIESTAdata_mode1, FIESTAdata_mode2, eFIESTAdata_mode2, FIESTAdata_mode3, eFIESTAdata_mode3
+  ✓ Hyperparameters CSV saved: DS9_DTU-Padova-PSU_emcee_3modes_hyperparameters.csv
+
+================================================================================
+ALL BEST FIESTA EMCEE MODELS PROCESSED!
+================================================================================
+Results saved in: /work2/lbuc/iara/GitHub/PyORBIT_examples/ESSP4/submission_csv_files/results_fiesta_emcee
