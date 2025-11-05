@@ -55,6 +55,10 @@ pyorbit_package.egg-info/
 *.pkl
 *.pickle
 *.dat
+*.rdb
+*.fits
+*.png
+*.txt
 
 # Ignore everything in ESSP4 except scripts folders
 ESSP4/*
