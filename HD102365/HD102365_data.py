@@ -283,6 +283,53 @@ def save_rdb_concatenated(df, outdir, exclude_outliers=True):
     np.savetxt(fwhm_outfile, fwhm_data, fmt=["%.6f", "%.6f", "%.6f", "%d", "%d", "%d"])
     print(f"Saved: {fwhm_outfile}")
 
+def plot_all_instruments_timeseries(df_dat, fig_dir):
+    """Plot time series of RV data for all instruments."""
+    
+    fig, ax = plt.subplots(figsize=(14, 6))
+    
+    # Get unique instruments
+    instruments = sorted(df_dat['Instrument'].unique())
+    
+    # Define colors for different instruments
+    colors = plt.cm.tab10(np.linspace(0, 1, len(instruments)))
+    
+    # Plot each instrument
+    for idx, inst in enumerate(instruments):
+        inst_data = df_dat[df_dat['Instrument'] == inst].copy()
+        inst_data = inst_data.sort_values('BJD')
+        
+        # Split into inliers and outliers
+        inliers = inst_data[~inst_data['is_outlier']]
+        outliers = inst_data[inst_data['is_outlier']]
+        
+        # Plot inliers
+        if not inliers.empty:
+            ax.errorbar(inliers['BJD'], inliers['RV'], 
+                       yerr=inliers['e_RV'],
+                       fmt='o', markersize=4, capsize=2, 
+                       label=inst, color=colors[idx], alpha=0.7)
+        
+        # Plot outliers (in black with red edge)
+        if not outliers.empty:
+            ax.errorbar(outliers['BJD'], outliers['RV'], 
+                       yerr=outliers['e_RV'],
+                       fmt='o', markersize=6, capsize=2, 
+                       color='black', markeredgecolor='red', 
+                       markeredgewidth=1.5, alpha=0.7)
+    
+    ax.set_xlabel('BJD', fontsize=12)
+    ax.set_ylabel('RV (m/s)', fontsize=12)
+    ax.set_title('Radial Velocity Time Series - All Instruments', fontsize=14, fontweight='bold')
+    ax.legend(loc='best', fontsize=10, ncol=2)
+    ax.grid(True, alpha=0.3)
+    
+    plt.tight_layout()
+    fig_path = os.path.join(fig_dir, "HD102365_all_instruments_timeseries.png")
+    plt.savefig(fig_path, dpi=150, bbox_inches='tight')
+    print(f"Saved figure: {fig_path}")
+    plt.close()
+
 def plot_instrument_timeseries(inst, inst_df, fig_dir):
     """Plot time series for a single instrument."""
     
@@ -291,7 +338,7 @@ def plot_instrument_timeseries(inst, inst_df, fig_dir):
     plot_info = [
         ('RV', 'e_RV', 'RV [m/s]'),
         ('SHK', 'e_SHK', 'S_HK Index'),
-        ('EWHa', 'e_EWHa', 'EW H-alpha [0.1 pm]')
+        ('EWHa', 'e_EWHa', 'EW H-alpha [0.1 Å]')
     ]
     
     for ax, (col, err_col, ylabel) in zip(axes, plot_info):
@@ -325,7 +372,7 @@ def plot_instrument_timeseries(inst, inst_df, fig_dir):
         # Plot inliers
         if not inliers.empty:
             ax.errorbar(inliers['BJD'], inliers[col], yerr=yerr_in,
-                       fmt="o", color="blue", label="Data", 
+                       fmt="o", color="skyblue", label="Data", 
                        alpha=0.7, markersize=5)
         
         # Plot outliers
@@ -433,6 +480,10 @@ def main():
         inst_data = df_dat[df_dat['Instrument'] == inst]
         plot_instrument_timeseries(inst, inst_data, fig_dir)
     
+    # Create all instruments combined plot
+    print("\nCreating all instruments combined time series plot...")
+    plot_all_instruments_timeseries(df_dat, fig_dir)
+    
     # Process .rdb files
     print("\n" + "=" * 60)
     print("Processing ESPRESSO .rdb files...")
@@ -445,14 +496,12 @@ def main():
     print("\nCreating ESPRESSO time series plot...")
     plot_espresso_timeseries(df_rdb, fig_dir)
     
-    # Save processed dataframes
-    df_dat.to_pickle(os.path.join(outdir, "processed_dat_data.pkl"))
-    df_rdb.to_pickle(os.path.join(outdir, "processed_rdb_data.pkl"))
-    print(f"\nSaved processed dataframes to {outdir}")
-    
     print("\n" + "=" * 60)
     print("Processing complete!")
     print("=" * 60)
+    print(f"\nOutput files saved to:")
+    print(f"  Data: {outdir}")
+    print(f"  Figures: {fig_dir}")
 
 if __name__ == "__main__":
     main()
