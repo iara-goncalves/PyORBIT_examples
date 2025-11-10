@@ -1,0 +1,43 @@
+#!/bin/sh 
+### General options 
+### -- specify queue -- 
+#BSUB -q hpc
+### -- set the job Name -- 
+#BSUB -J submission2_HD102365
+### -- ask for number of cores (default: 1) -- 
+#BSUB -n 16
+### -- specify that the cores must be on the same host -- 
+#BSUB -R "span[hosts=1]"
+### -- specify that we need 1GB of memory per core/slot -- 
+#BSUB -R "rusage[mem=1GB]"
+### -- specify that we want the job to get killed if it exceeds 2GB per core/slot -- 
+#BSUB -M 2GB
+### -- set walltime limit: hh:mm -- 
+#BSUB -W 48:00
+### -- set the email address -- 
+#BSUB -u icogo@dtu.dk
+### -- send notification at start -- 
+#BSUB -B 
+### -- send notification at completion -- 
+#BSUB -N 
+### -- Specify the output and error file. %J is the job-id -- 
+#BSUB -o /work2/lbuc/iara/GitHub/PyORBIT_examples/HD102365/Output_submission2.out
+
+# Change to configuration directory
+cd /work2/lbuc/iara/GitHub/PyORBIT_examples/HD102365
+
+# Clean up previous runs
+rm -f configuration_file_emcee_run_submission2.log
+
+# Activate PyORBIT environment
+source /work2/lbuc/iara/anaconda3/etc/profile.d/conda.sh
+conda activate pyorbit
+
+# Run PyORBIT analysis
+pyorbit_run emcee submission2.yaml > configuration_file_emcee_run_submission2.log
+pyorbit_results emcee submission2.yaml -all >> configuration_file_emcee_run_submission2.log
+
+# Deactivate environment
+conda deactivate
+
+echo "Job submission2 HD102365 completed at: $(date)"

@@ -1,3 +1,5 @@
+# HD102365_data.py
+
 from glob import glob
 import os
 import numpy as np
@@ -6,7 +8,20 @@ import pandas as pd
 from matplotlib.pyplot import errorbar
 
 def load_dat_file(dat_file, star_name="HD102365"):
-    """Load the .dat file and extract data for the specified star."""
+    """Load the .dat file and extract data for the specified star.
+    
+    Format understanding based on actual data:
+    - UCLES: has EWHa only (S_HK columns empty) → 8 columns after split
+    - HIRES-Post, HARPS-Pre, PFS-Pre, PFS-Post: have S_HK only → 8 columns after split
+    - Other instruments: RV only → 6 columns after split
+    
+    The challenge: both "S_HK only" and "EWHa only" result in 8 columns!
+    Solution: Use instrument name to determine which one it is.
+    """
+    
+    # Define which instruments have which activity indicators
+    EWHA_INSTRUMENTS = {'UCLES'}
+    SHK_INSTRUMENTS = {'HIRES-Post', 'HARPS-Pre', 'PFS-Pre', 'PFS-Post', 'HARPS-Post'}
     
     data = []
     with open(dat_file, 'r') as f:
@@ -27,37 +42,47 @@ def load_dat_file(dat_file, star_name="HD102365"):
                     inst = parts[4]
                     
                     # Initialize optional values
-                    shk = np.nan # Mt. Wilson CaII HK activity index
-                    e_shk = np.nan # Equivalent width, H{alpha}, 0.1{AA}
+                    shk = np.nan
+                    e_shk = np.nan
                     ewha = np.nan
                     e_ewha = np.nan
-                    filename = ''
+                    run_id = ''
                     
-                    # The filename is always the last element
-                    if len(parts) > 5:
-                        filename = parts[-1]
+                    # Parse based on number of columns after .split()
+                    if len(parts) == 6:
+                        # Only RV data: star bjd rv e_rv instrument run_id
+                        run_id = parts[5]
                         
-                        # Everything between instrument and filename are numeric values
-                        # Try to parse them as: SHK, e_SHK, EWHa, e_EWHa
-                        numeric_parts = parts[5:-1]  # Exclude filename
+                    elif len(parts) == 8:
+                        # Could be either S_HK only OR EWHa only
+                        # Use instrument name to determine which
+                        if inst in EWHA_INSTRUMENTS:
+                            # EWHa only (S_HK columns were empty)
+                            ewha = float(parts[5])
+                            e_ewha = float(parts[6])
+                            run_id = parts[7]
+                        elif inst in SHK_INSTRUMENTS:
+                            # S_HK only (EWHa columns were empty)
+                            shk = float(parts[5])
+                            e_shk = float(parts[6])
+                            run_id = parts[7]
+                        else:
+                            # Unknown instrument with 8 columns - try to guess
+                            print(f"Warning: Unknown instrument '{inst}' with 8 columns at line {line_num}")
+                            run_id = parts[7]
                         
-                        numeric_values = []
-                        for val in numeric_parts:
-                            try:
-                                numeric_values.append(float(val))
-                            except ValueError:
-                                # Skip non-numeric values
-                                pass
-                        
-                        # Assign based on how many numeric values we found
-                        if len(numeric_values) >= 1:
-                            shk = numeric_values[0]
-                        if len(numeric_values) >= 2:
-                            e_shk = numeric_values[1]
-                        if len(numeric_values) >= 3:
-                            ewha = numeric_values[2]
-                        if len(numeric_values) >= 4:
-                            e_ewha = numeric_values[3]
+                    elif len(parts) == 10:
+                        # Both S_HK and EWHa present
+                        shk = float(parts[5])
+                        e_shk = float(parts[6])
+                        ewha = float(parts[7])
+                        e_ewha = float(parts[8])
+                        run_id = parts[9]
+                    
+                    else:
+                        print(f"Warning: Unexpected format at line {line_num} ({len(parts)} columns)")
+                        print(f"  Content: {line[:100]}")
+                        continue
                     
                     data.append({
                         'Star': star,
@@ -69,7 +94,7 @@ def load_dat_file(dat_file, star_name="HD102365"):
                         'e_SHK': e_shk,
                         'EWHa': ewha,
                         'e_EWHa': e_ewha,
-                        'File': filename
+                        'File': run_id
                     })
                     
                 except (ValueError, IndexError) as e:
@@ -82,15 +107,38 @@ def load_dat_file(dat_file, star_name="HD102365"):
     if len(df) > 0:
         print(f"Date range: {df['BJD'].min():.2f} to {df['BJD'].max():.2f}")
         print(f"Instruments: {sorted(df['Instrument'].unique())}")
-        print(f"SHK measurements: {df['SHK'].notna().sum()} / {len(df)}")
-        print(f"EWHa measurements: {df['EWHa'].notna().sum()} / {len(df)}")
+        print(f"\nActivity indicators by instrument:")
+        for inst in sorted(df['Instrument'].unique()):
+            inst_data = df[df['Instrument'] == inst]
+            n_shk = inst_data['SHK'].notna().sum()
+            n_ewha = inst_data['EWHa'].notna().sum()
+            print(f"  {inst}: {len(inst_data)} obs, S_HK: {n_shk}, EWHa: {n_ewha}")
     return df
 
-def load_rdb_files(rdb_dir, file_pattern="HD102365_ESPRESSO*.rdb"):
-    """Load all .rdb files and concatenate them with proper flags."""
+def load_rdb_files(rdb_dir, file_pattern="HD102365_ESPRESSO*.rdb", exclude_files=None):
+    """Load all .rdb files and concatenate them with proper flags.
+    
+    Parameters:
+    -----------
+    rdb_dir : str
+        Directory containing the RDB files
+    file_pattern : str
+        Glob pattern for RDB files
+    exclude_files : list of str, optional
+        List of filenames to exclude (e.g., ['HD102365_ESPRESSO19_2.rdb'])
+    """
+    
+    if exclude_files is None:
+        exclude_files = []
     
     rdb_files = sorted(glob(os.path.join(rdb_dir, file_pattern)))
-    print(f"Found {len(rdb_files)} .rdb files")
+    
+    # Filter out excluded files
+    rdb_files = [f for f in rdb_files if os.path.basename(f) not in exclude_files]
+    
+    print(f"Found {len(rdb_files)} .rdb files (after exclusions)")
+    if exclude_files:
+        print(f"Excluded files: {', '.join(exclude_files)}")
     
     df_list = []
     
@@ -104,6 +152,13 @@ def load_rdb_files(rdb_dir, file_pattern="HD102365_ESPRESSO*.rdb"):
                                    's_mw', 'sig_s', 'ha', 'sig_ha', 'na', 'sig_na',
                                    'ca', 'sig_ca', 'rhk', 'sig_rhk', 'berv', 'weight'])
         
+        # Convert RJD to BJD
+        # RJD = MJD - 50000, and BJD ≈ MJD + 2400000.5
+        # So BJD = RJD + 2450000
+        df_tmp['bjd'] = df_tmp['rjd'] + 2450000.0
+        
+        print(f"  Converted RJD to BJD: {df_tmp['rjd'].min():.2f} → {df_tmp['bjd'].min():.2f}")
+        
         # Add dataset identifier
         df_tmp['Dataset'] = os.path.basename(rdb_file).replace('.rdb', '')
         df_tmp['offset_flag'] = i  # Different offset for each file
@@ -114,6 +169,7 @@ def load_rdb_files(rdb_dir, file_pattern="HD102365_ESPRESSO*.rdb"):
     # Concatenate all dataframes
     df_all = pd.concat(df_list, ignore_index=True)
     print(f"Total ESPRESSO observations: {len(df_all)}")
+    print(f"BJD range: {df_all['bjd'].min():.2f} to {df_all['bjd'].max():.2f}")
     
     return df_all
 
@@ -179,7 +235,6 @@ def save_dat_files_per_instrument(df, outdir, exclude_outliers=True):
     
     # Get all unique instruments
     instruments = sorted(df_export['Instrument'].unique())
-    instrument_map = {inst: i for i, inst in enumerate(instruments)}
     
     for inst in instruments:
         inst_data = df_export[df_export['Instrument'] == inst].copy()
@@ -187,25 +242,27 @@ def save_dat_files_per_instrument(df, outdir, exclude_outliers=True):
         if len(inst_data) == 0:
             continue
         
-        print(f"Processing {inst}: {len(inst_data)} observations")
+        print(f"\n{inst}: {len(inst_data)} observations")
         
-        # Prepare data
+        # Prepare data - ALL FLAGS SET TO 0 for single instrument files
         time = inst_data['BJD'].values
         rv = inst_data['RV'].values
         rv_err = inst_data['e_RV'].values
         jitter_flag = np.zeros(len(inst_data), dtype=int)
-        offset_flag = np.full(len(inst_data), instrument_map[inst], dtype=int)
+        offset_flag = np.zeros(len(inst_data), dtype=int)  # SET TO 0
         subset_flag = -1 * np.ones(len(inst_data), dtype=int)
         
         # Save RV data
         rv_data = np.column_stack([time, rv, rv_err, jitter_flag, offset_flag, subset_flag])
         rv_outfile = os.path.join(outdir, f"HD102365_{inst}_RV.dat")
         np.savetxt(rv_outfile, rv_data, fmt=["%.6f", "%.6f", "%.6f", "%d", "%d", "%d"])
-        print(f"  Saved: {rv_outfile}")
+        print(f"  ✓ RV: {rv_outfile}")
         
         # Save SHK data if available
         if inst_data['SHK'].notna().any():
             shk_data_filtered = inst_data[inst_data['SHK'].notna()].copy()
+            n_shk = len(shk_data_filtered)
+            
             time_shk = shk_data_filtered['BJD'].values
             shk = shk_data_filtered['SHK'].values
             e_shk = shk_data_filtered['e_SHK'].values
@@ -213,18 +270,20 @@ def save_dat_files_per_instrument(df, outdir, exclude_outliers=True):
             # Use a default error if e_SHK is NaN
             e_shk = np.where(np.isnan(e_shk), 0.01, e_shk)
             
-            jitter_shk = np.zeros(len(shk_data_filtered), dtype=int)
-            offset_shk = np.full(len(shk_data_filtered), instrument_map[inst], dtype=int)
-            subset_shk = -1 * np.ones(len(shk_data_filtered), dtype=int)
+            jitter_shk = np.zeros(n_shk, dtype=int)
+            offset_shk = np.zeros(n_shk, dtype=int)  # SET TO 0
+            subset_shk = -1 * np.ones(n_shk, dtype=int)
             
             shk_data = np.column_stack([time_shk, shk, e_shk, jitter_shk, offset_shk, subset_shk])
             shk_outfile = os.path.join(outdir, f"HD102365_{inst}_SHK.dat")
             np.savetxt(shk_outfile, shk_data, fmt=["%.6f", "%.6f", "%.6f", "%d", "%d", "%d"])
-            print(f"  Saved: {shk_outfile}")
+            print(f"  ✓ SHK: {shk_outfile} ({n_shk} points)")
         
         # Save EWHa data if available
         if inst_data['EWHa'].notna().any():
             ewha_data_filtered = inst_data[inst_data['EWHa'].notna()].copy()
+            n_ewha = len(ewha_data_filtered)
+            
             time_ewha = ewha_data_filtered['BJD'].values
             ewha = ewha_data_filtered['EWHa'].values
             e_ewha = ewha_data_filtered['e_EWHa'].values
@@ -232,17 +291,17 @@ def save_dat_files_per_instrument(df, outdir, exclude_outliers=True):
             # Use a default error if e_EWHa is NaN
             e_ewha = np.where(np.isnan(e_ewha), 0.001, e_ewha)
             
-            jitter_ewha = np.zeros(len(ewha_data_filtered), dtype=int)
-            offset_ewha = np.full(len(ewha_data_filtered), instrument_map[inst], dtype=int)
-            subset_ewha = -1 * np.ones(len(ewha_data_filtered), dtype=int)
+            jitter_ewha = np.zeros(n_ewha, dtype=int)
+            offset_ewha = np.zeros(n_ewha, dtype=int)  # SET TO 0
+            subset_ewha = -1 * np.ones(n_ewha, dtype=int)
             
             ewha_data = np.column_stack([time_ewha, ewha, e_ewha, jitter_ewha, offset_ewha, subset_ewha])
             ewha_outfile = os.path.join(outdir, f"HD102365_{inst}_EWHa.dat")
             np.savetxt(ewha_outfile, ewha_data, fmt=["%.6f", "%.6f", "%.6f", "%d", "%d", "%d"])
-            print(f"  Saved: {ewha_outfile}")
+            print(f"  ✓ EWHa: {ewha_outfile} ({n_ewha} points)")
 
 def save_rdb_concatenated(df, outdir, exclude_outliers=True):
-    """Save concatenated .rdb data for PyORBIT."""
+    """Save concatenated .rdb data for PyORBIT (using BJD timestamps)."""
     
     os.makedirs(outdir, exist_ok=True)
     
@@ -253,8 +312,8 @@ def save_rdb_concatenated(df, outdir, exclude_outliers=True):
         df_export = df.copy()
         print("Writing ESPRESSO files using ALL points.")
     
-    # Prepare data
-    time = df_export['rjd'].values
+    # Prepare data - USE BJD INSTEAD OF RJD
+    time = df_export['bjd'].values  # Changed from 'rjd' to 'bjd'
     rv = df_export['vrad'].values
     rv_err = df_export['svrad'].values
     jitter_flag = df_export['jitter_flag'].values
@@ -266,6 +325,7 @@ def save_rdb_concatenated(df, outdir, exclude_outliers=True):
     rv_outfile = os.path.join(outdir, "HD102365_ESPRESSO_RV.dat")
     np.savetxt(rv_outfile, rv_data, fmt=["%.6f", "%.6f", "%.6f", "%d", "%d", "%d"])
     print(f"Saved: {rv_outfile} ({len(rv_data)} points)")
+    print(f"  BJD range: {time.min():.2f} to {time.max():.2f}")
     
     # Save BIS data
     bis = df_export['bis_span'].values
@@ -419,15 +479,15 @@ def plot_espresso_timeseries(df, fig_dir):
             inliers = ds_data[~ds_data['is_outlier']]
             outliers = ds_data[ds_data['is_outlier']]
             
-            # Plot inliers
+            # Plot inliers - USE BJD INSTEAD OF RJD
             if not inliers.empty:
-                ax.errorbar(inliers['rjd'], inliers[col], yerr=inliers[err_col],
+                ax.errorbar(inliers['bjd'], inliers[col], yerr=inliers[err_col],
                            fmt="o", color=color_map[dataset], label=dataset,
                            alpha=0.7, markersize=5)
             
             # Plot outliers
             if not outliers.empty:
-                ax.errorbar(outliers['rjd'], outliers[col], yerr=outliers[err_col],
+                ax.errorbar(outliers['bjd'], outliers[col], yerr=outliers[err_col],
                            fmt="o", color="black", alpha=0.7, markersize=7,
                            markeredgecolor="red", markeredgewidth=1.5)
         
@@ -445,7 +505,7 @@ def plot_espresso_timeseries(df, fig_dir):
         labels.append('Outliers')
     axes[0].legend(handles, labels, loc='best')
     
-    axes[-1].set_xlabel("RJD")
+    axes[-1].set_xlabel("BJD")
     fig.suptitle("HD102365 - ESPRESSO", fontsize=16)
     plt.tight_layout(rect=[0, 0, 1, 0.97])
     
@@ -488,7 +548,13 @@ def main():
     print("\n" + "=" * 60)
     print("Processing ESPRESSO .rdb files...")
     print("=" * 60)
-    df_rdb = load_rdb_files(data_dir, file_pattern="HD102365_ESPRESSO*.rdb")
+    
+    # Exclude the problematic file
+    exclude_files = ['HD102365_ESPRESSO19_2.rdb', 'HD102365_ESPRESSO19_3.rdb']
+    
+    df_rdb = load_rdb_files(data_dir, 
+                           file_pattern="HD102365_ESPRESSO*.rdb",
+                           exclude_files=exclude_files)
     df_rdb = detect_outliers_rdb(df_rdb, sigma_threshold=4)
     save_rdb_concatenated(df_rdb, outdir, exclude_outliers=True)
     
