@@ -91,6 +91,13 @@ common:
         P: [1.1, 1000.0]
         K: [0.1, 10.0]
         e: [0.00, 0.80]
+    d:
+      orbit: keplerian
+      parametrization: Eastman2013
+      boundaries:
+        P: [1.1, 1000.0]
+        K: [0.1, 10.0]
+        e: [0.00, 0.80]
   activity:
     boundaries:
       Prot: [20.0, 50.0]
@@ -111,6 +118,7 @@ models:
     planets:
       - b
       - c
+      - d
   gp_multidimensional:
     model: spleaf_multidimensional_esp
     common: activity
