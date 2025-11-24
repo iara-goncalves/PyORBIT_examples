@@ -173,37 +173,44 @@ def load_rdb_files(rdb_dir, file_pattern="HD102365_ESPRESSO*.rdb", exclude_files
     
     return df_all
 
-def detect_outliers_dat(df, sigma_threshold=4):
-    """Detect outliers in .dat file data per instrument."""
+def detect_outliers_dat(df, sigma_thresholds=None):
+    """Detect outliers in .dat file data per instrument.
+    
+    Parameters:
+    -----------
+    df : DataFrame
+        Input data
+    sigma_thresholds : dict or float
+        If dict: mapping of instrument names to sigma thresholds
+                 e.g., {'HARPS-Post': 4, 'UCLES': 3}
+        If float: single threshold for all instruments (default: 3)
+    
+    Note: Checks RV, SHK, and EWHa for outliers. A point is flagged as outlier
+          if ANY of its measurements exceed the threshold.
+    """
+    
+    # Default threshold
+    if sigma_thresholds is None:
+        sigma_thresholds = 3
+    
+    # Convert single value to dict
+    if isinstance(sigma_thresholds, (int, float)):
+        default_threshold = sigma_thresholds
+        sigma_thresholds = {}
+    else:
+        default_threshold = 3
     
     df['is_outlier'] = False
     
     for inst in df['Instrument'].unique():
-        idx = df[df['Instrument'] == inst].index
+        # Get threshold for this instrument (or use default)
+        threshold = sigma_thresholds.get(inst, default_threshold)
         
-        # Check RV outliers
-        rv_data = df.loc[idx, 'RV'].dropna()
-        if len(rv_data) > 0:
-            median = rv_data.median()
-            std = rv_data.std(ddof=1)
-            if std > 0 and not np.isnan(std):
-                outliers = np.abs(df.loc[idx, 'RV'] - median) > (sigma_threshold * std)
-                df.loc[idx[outliers], 'is_outlier'] = True
-    
-    n_out = df['is_outlier'].sum()
-    print(f"Outliers flagged in .dat data: {n_out} ({n_out/len(df)*100:.2f}%)")
-    
-    return df
-
-def detect_outliers_rdb(df, sigma_threshold=4):
-    """Detect outliers in .rdb file data per dataset."""
-    
-    df['is_outlier'] = False
-    cols_to_check = ['vrad', 'bis_span', 'fwhm']
-    
-    for dataset in df['Dataset'].unique():
-        idx = df[df['Dataset'] == dataset].index
+        idx = df[df['Instrument'] == inst].index
         out_mask = np.zeros(len(idx), dtype=bool)
+        
+        # Columns to check for outliers
+        cols_to_check = ['RV', 'SHK', 'EWHa']
         
         for col in cols_to_check:
             data = df.loc[idx, col].dropna()
@@ -211,13 +218,96 @@ def detect_outliers_rdb(df, sigma_threshold=4):
                 median = data.median()
                 std = data.std(ddof=1)
                 if std > 0 and not np.isnan(std):
-                    col_outliers = np.abs(df.loc[idx, col] - median) > (sigma_threshold * std)
+                    col_outliers = np.abs(df.loc[idx, col] - median) > (threshold * std)
                     out_mask |= col_outliers.fillna(False).values
         
         df.loc[idx, 'is_outlier'] = out_mask
+        n_out = out_mask.sum()
+        
+        # Print detailed statistics
+        n_rv_out = 0
+        n_shk_out = 0
+        n_ewha_out = 0
+        
+        if 'RV' in df.columns:
+            rv_data = df.loc[idx, 'RV'].dropna()
+            if len(rv_data) > 0:
+                median = rv_data.median()
+                std = rv_data.std(ddof=1)
+                if std > 0:
+                    n_rv_out = (np.abs(df.loc[idx, 'RV'] - median) > (threshold * std)).sum()
+        
+        if 'SHK' in df.columns:
+            shk_data = df.loc[idx, 'SHK'].dropna()
+            if len(shk_data) > 0:
+                median = shk_data.median()
+                std = shk_data.std(ddof=1)
+                if std > 0:
+                    n_shk_out = (np.abs(df.loc[idx, 'SHK'] - median) > (threshold * std)).sum()
+        
+        if 'EWHa' in df.columns:
+            ewha_data = df.loc[idx, 'EWHa'].dropna()
+            if len(ewha_data) > 0:
+                median = ewha_data.median()
+                std = ewha_data.std(ddof=1)
+                if std > 0:
+                    n_ewha_out = (np.abs(df.loc[idx, 'EWHa'] - median) > (threshold * std)).sum()
+        
+        print(f"  {inst}: {threshold}σ threshold → {n_out} total outliers ({n_out/len(idx)*100:.2f}%)")
+        print(f"    RV: {n_rv_out}, SHK: {n_shk_out}, EWHa: {n_ewha_out}")
     
     n_out = df['is_outlier'].sum()
-    print(f"Outliers flagged in .rdb data: {n_out} ({n_out/len(df)*100:.2f}%)")
+    print(f"\nTotal outliers flagged in .dat data: {n_out} ({n_out/len(df)*100:.2f}%)")
+    
+    return df
+
+def detect_outliers_rdb(df, sigma_thresholds=None, default_sigma=3):
+    """Detect outliers in .rdb file data per dataset.
+    
+    Parameters:
+    -----------
+    df : DataFrame
+        Input data with 'Dataset' column
+    sigma_thresholds : dict, float, or None
+        If dict: mapping of dataset names to sigma thresholds
+        If float: single threshold for all datasets
+        If None: use default_sigma
+    default_sigma : float
+        Default sigma threshold for datasets not in sigma_thresholds dict
+    """
+    
+    df['is_outlier'] = False
+    
+    if sigma_thresholds is None:
+        default_threshold = default_sigma
+        sigma_thresholds = {}
+    elif isinstance(sigma_thresholds, (int, float)):
+        default_threshold = sigma_thresholds
+        sigma_thresholds = {}
+    else:
+        default_threshold = default_sigma
+    
+    cols_to_check = ['vrad', 'bis_span', 'fwhm']
+    
+    for dataset in df['Dataset'].unique():
+        threshold = sigma_thresholds.get(dataset, default_threshold)
+        
+        print(f"  {dataset}: using {threshold}σ threshold")
+        
+        idx = df[df['Dataset'] == dataset].index
+        
+        for col in cols_to_check:
+            data = df.loc[idx, col].dropna()
+            if len(data) > 0:
+                median = data.median()
+                std = data.std(ddof=1)
+                
+                if std > 0 and not np.isnan(std):
+                    outlier_mask = np.abs(df.loc[idx, col] - median) > (threshold * std)
+                    df.loc[idx[outlier_mask.fillna(False)], 'is_outlier'] = True
+    
+    n_outliers = df['is_outlier'].sum()
+    print(f"  Total outliers detected: {n_outliers} / {len(df)}")
     
     return df
 
@@ -514,6 +604,7 @@ def plot_espresso_timeseries(df, fig_dir):
     plt.close(fig)
     print(f"Saved figure: {fig_path}")
 
+
 def main():
     """Main function to process HD102365 data."""
     
@@ -526,12 +617,30 @@ def main():
     os.makedirs(outdir, exist_ok=True)
     os.makedirs(fig_dir, exist_ok=True)
     
+    # Define instrument-specific sigma thresholds
+
+    dat_sigma_thresholds = {
+    'HARPS-Post': 5,
+    'HARPS-Pre': 5,
+    'HIRES-Post': 1.5,
+    'PFS-Pre': 3,
+    'PFS-Post': 3,
+    'UCLES': 4.5,
+}   
+    
+    # Define ESPRESSO dataset-specific thresholds
+    rdb_sigma_thresholds = {
+        'HD102365_ESPRESSO18_1': 5,
+        'HD102365_ESPRESSO18_2': 5,
+        'HD102365_ESPRESSO19_1': 5,
+    } 
+    
     # Process .dat file
     print("=" * 60)
     print("Processing table3.dat file...")
     print("=" * 60)
     df_dat = load_dat_file(dat_file, star_name="HD102365")
-    df_dat = detect_outliers_dat(df_dat, sigma_threshold=4)
+    df_dat = detect_outliers_dat(df_dat, sigma_thresholds=dat_sigma_thresholds)
     save_dat_files_per_instrument(df_dat, outdir, exclude_outliers=True)
     
     # Create plots for each instrument
@@ -555,8 +664,11 @@ def main():
     df_rdb = load_rdb_files(data_dir, 
                            file_pattern="HD102365_ESPRESSO*.rdb",
                            exclude_files=exclude_files)
-    df_rdb = detect_outliers_rdb(df_rdb, sigma_threshold=4)
+    df_rdb = detect_outliers_rdb(df_rdb,
+                             sigma_thresholds=rdb_sigma_thresholds,
+                             default_sigma=100) # High default to avoid over-flagging
     save_rdb_concatenated(df_rdb, outdir, exclude_outliers=True)
+    # save_rdb_concatenated(df_rdb, outdir, exclude_outliers=False)
     
     # Create ESPRESSO plot
     print("\nCreating ESPRESSO time series plot...")

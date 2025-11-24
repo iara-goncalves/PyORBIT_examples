@@ -5,17 +5,17 @@
 ### -- set the job Name -- 
 #BSUB -J HD102365_submission1p
 ### -- ask for number of cores (default: 1) -- 
-#BSUB -n 96
+#BSUB -n 48
 ### -- specify that the cores must be on the same host -- 
 #BSUB -R "span[hosts=1]"
 ### -- specify that we need 1GB of memory per core/slot -- 
-#BSUB -R "rusage[mem=1GB]"
+#BSUB -R "rusage[mem=8GB]"
 ### -- specify that we want the job to get killed if it exceeds 2GB per core/slot -- 
-#BSUB -M 2GB
+#BSUB -M 8GB
 ### -- set walltime limit: hh:mm -- 
-#BSUB -W 240:00
+#BSUB -W 72:00
 ### -- set the email address -- 
-#BSUB -u icogo@dtu.dk
+#BSUB -u jzhao@space.dtu.dk
 ### -- send notification at start -- 
 #BSUB -B 
 ### -- send notification at completion -- 
