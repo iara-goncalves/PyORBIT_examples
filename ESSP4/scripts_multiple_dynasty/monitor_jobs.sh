@@ -27,15 +27,16 @@ echo ""
 echo "ccfs (FWHM, Contrast):"
 bjobs | grep -E "(DS[1-9]_[0-3]p_ccfs)"
 
-echo ""
-echo "white_noise (RV only):"
-bjobs | grep -E "(DS[1-9]_[1-3]p_white_noise)"
+# Removed white_noise monitoring
+# echo ""
+# echo "white_noise (RV only):"
+# bjobs | grep -E "(DS[1-9]_[1-3]p_white_noise)"
 
 echo ""
 echo "Job summary:"
-total_jobs=$(bjobs | grep -c -E "(DS[1-9]_[0-3]p_(2_activity_indi|4_activity_indi|5_activity_indi|ccfs|white_noise))")
-running_jobs=$(bjobs | grep RUN | grep -c -E "(DS[1-9]_[0-3]p_(2_activity_indi|4_activity_indi|5_activity_indi|ccfs|white_noise))")
-pending_jobs=$(bjobs | grep PEND | grep -c -E "(DS[1-9]_[0-3]p_(2_activity_indi|4_activity_indi|5_activity_indi|ccfs|white_noise))")
+total_jobs=$(bjobs | grep -c -E "(DS[1-9]_[0-3]p_(2_activity_indi|4_activity_indi|5_activity_indi|ccfs))")
+running_jobs=$(bjobs | grep RUN | grep -c -E "(DS[1-9]_[0-3]p_(2_activity_indi|4_activity_indi|5_activity_indi|ccfs))")
+pending_jobs=$(bjobs | grep PEND | grep -c -E "(DS[1-9]_[0-3]p_(2_activity_indi|4_activity_indi|5_activity_indi|ccfs))")
 
 echo "Total PyORBIT jobs: $total_jobs"
 echo "Running: $running_jobs"
@@ -43,7 +44,7 @@ echo "Pending: $pending_jobs"
 
 echo ""
 echo "Jobs by configuration:"
-for config in 2_activity_indi 4_activity_indi 5_activity_indi ccfs white_noise; do
+for config in 2_activity_indi 4_activity_indi 5_activity_indi ccfs; do
     config_count=$(bjobs | grep -c -E "(DS[1-9]_[0-3]p_${config})")
     if [ $config_count -gt 0 ]; then
         echo "  $config: $config_count jobs"
@@ -53,7 +54,7 @@ done
 echo ""
 echo "Jobs by planet configuration:"
 for planet in 0p 1p 2p 3p; do
-    planet_count=$(bjobs | grep -c -E "(DS[1-9]_${planet}_(2_activity_indi|4_activity_indi|5_activity_indi|ccfs|white_noise))")
+    planet_count=$(bjobs | grep -c -E "(DS[1-9]_${planet}_(2_activity_indi|4_activity_indi|5_activity_indi|ccfs))")
     if [ $planet_count -gt 0 ]; then
         echo "  $planet: $planet_count jobs"
     fi
@@ -62,7 +63,7 @@ done
 echo ""
 echo "Jobs by dataset:"
 for ds in DS1 DS2 DS3 DS4 DS5 DS6 DS7 DS8 DS9; do
-    ds_count=$(bjobs | grep -c -E "(${ds}_[0-3]p_(2_activity_indi|4_activity_indi|5_activity_indi|ccfs|white_noise))")
+    ds_count=$(bjobs | grep -c -E "(${ds}_[0-3]p_(2_activity_indi|4_activity_indi|5_activity_indi|ccfs))")
     if [ $ds_count -gt 0 ]; then
         echo "  $ds: $ds_count jobs"
     fi

@@ -5,7 +5,7 @@
 ### -- set the job Name -- 
 #BSUB -J DS8_1p_5_activity_indi
 ### -- ask for number of cores (default: 1) -- 
-#BSUB -n 36
+#BSUB -n 16
 ### -- specify that the cores must be on the same host -- 
 #BSUB -R "span[hosts=1]"
 ### -- specify that we need 2GB of memory per core/slot -- 

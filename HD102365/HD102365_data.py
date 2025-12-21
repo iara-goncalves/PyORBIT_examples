@@ -622,7 +622,7 @@ def main():
     dat_sigma_thresholds = {
     'HARPS-Post': 5,
     'HARPS-Pre': 5,
-    'HIRES-Post': 1.5,
+    'HIRES-Post': 3,
     'PFS-Pre': 3,
     'PFS-Post': 3,
     'UCLES': 4.5,

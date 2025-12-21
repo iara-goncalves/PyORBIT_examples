@@ -38,9 +38,9 @@ pyorbit_run dynesty DS8_2p_2_activity_indi.yaml > configuration_file_emcee_run_D
 pyorbit_results dynesty DS8_2p_2_activity_indi.yaml -all >> configuration_file_emcee_run_DS8_2p_2_activity_indi.log
 
 # Create results directory and copy files
-mkdir -p ./DS8_2p_2_activity_indi
-cp DS8_2p_2_activity_indi.yaml ./DS8_2p_2_activity_indi/
-cp configuration_file_emcee_run_DS8_2p_2_activity_indi.log ./DS8_2p_2_activity_indi/
+# mkdir -p ./DS8_2p_2_activity_indi
+# cp DS8_2p_2_activity_indi.yaml ./DS8_2p_2_activity_indi/
+# cp configuration_file_emcee_run_DS8_2p_2_activity_indi.log ./DS8_2p_2_activity_indi/
 
 # Deactivate environment
 conda deactivate

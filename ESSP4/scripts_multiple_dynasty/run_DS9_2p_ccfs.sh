@@ -38,9 +38,9 @@ pyorbit_run dynesty DS9_2p_ccfs.yaml > configuration_file_emcee_run_DS9_2p_ccfs.
 pyorbit_results dynesty DS9_2p_ccfs.yaml -all >> configuration_file_emcee_run_DS9_2p_ccfs.log
 
 # Create results directory and copy files
-mkdir -p ./DS9_2p_ccfs
-cp DS9_2p_ccfs.yaml ./DS9_2p_ccfs/
-cp configuration_file_emcee_run_DS9_2p_ccfs.log ./DS9_2p_ccfs/
+# mkdir -p ./DS9_2p_ccfs
+# cp DS9_2p_ccfs.yaml ./DS9_2p_ccfs/
+# cp configuration_file_emcee_run_DS9_2p_ccfs.log ./DS9_2p_ccfs/
 
 # Deactivate environment
 conda deactivate

@@ -1,3 +1,4 @@
+# HD102365_figures.py
 
 import os
 import numpy as np
@@ -393,6 +394,338 @@ def plot_activity_with_periodograms(instrument, inst_df, fig_dir):
     plt.close(fig)
     print(f"  Saved: {fig_path}")
 
+def plot_combined_rv_with_periodogram(df_all, fig_dir):
+    """
+    Plot a combined RV time series (all non-ESPRESSO instruments) and a single
+    Lomb-Scargle periodogram using all their RV data.
+
+    Left: RV vs time, colored by instrument.
+    Right: LS periodogram for the combined RVs (median-subtracted).
+    """
+
+    # Exclude ESPRESSO data: anything with 'ESPRESSO' in the instrument name
+    if "Instrument" not in df_all.columns:
+        print("No 'Instrument' column found in df_all, cannot filter ESPRESSO.")
+        return
+
+    mask_non_espresso = ~df_all["Instrument"].astype(str).str.contains("ESPRESSO", case=False, na=False)
+    df_non_espresso = df_all[mask_non_espresso].copy()
+
+    if df_non_espresso.empty:
+        print("All data are ESPRESSO or no non-ESPRESSO RVs available, skipping combined RV plot.")
+        return
+
+    # Only keep rows that have RV data
+    if "RV [m/s]" not in df_non_espresso.columns:
+        print("No 'RV [m/s]' column found in df_all, skipping combined RV plot.")
+        return
+
+    rv_df = df_non_espresso[~df_non_espresso["RV [m/s]"].isna()].copy()
+    if rv_df.empty:
+        print("No non-ESPRESSO RV data available for combined RV plot.")
+        return
+
+    print(f"\nCreating combined RV time series and periodogram (non-ESPRESSO only)...")
+    print(f"  Total RV points: {len(rv_df)} from {rv_df['Instrument'].nunique()} instruments")
+    print(f"  Instruments: {sorted(rv_df['Instrument'].dropna().unique())}")
+
+    # Figure layout: 1 row, 2 columns (time series, periodogram)
+    fig, axes = plt.subplots(1, 2, figsize=(18, 6))
+    ax_ts, ax_ls = axes
+
+    # ---- LEFT PANEL: TIME SERIES ----
+    instruments = sorted(rv_df["Instrument"].dropna().unique())
+    colors = plt.cm.tab10(np.linspace(0, 1, max(1, len(instruments))))
+    color_map = dict(zip(instruments, colors))
+
+    for inst in instruments:
+        inst_data = rv_df[rv_df["Instrument"] == inst].copy()
+
+        # Center each instrument by its own median for visualization
+        median_inst = inst_data["RV [m/s]"].median()
+        y_centered = inst_data["RV [m/s]"] - median_inst
+
+        # Use errors if available, otherwise no error bars
+        if "RV Err. [m/s]" in inst_data.columns:
+            yerr = inst_data["RV Err. [m/s]"].values
+        else:
+            yerr = None
+
+        ax_ts.errorbar(
+            inst_data["Time [BJD]"],
+            y_centered,
+            yerr=yerr,
+            fmt="o",
+            color=color_map[inst],
+            label=inst,
+            alpha=0.7,
+            markersize=5,
+            capsize=2,
+        )
+
+    ax_ts.set_xlabel("Time [BJD]")
+    ax_ts.set_ylabel("RV [m/s] (per-instrument median subtracted)")
+    ax_ts.grid(True, alpha=0.3)
+    ax_ts.legend(fontsize=8, loc="best", ncol=2)
+    ax_ts.set_title("HD102365 - Combined RVs (All Non-ESPRESSO Instruments)")
+
+    # ---- RIGHT PANEL: LOMB-SCARGLE PERIODOGRAM (combined data) ----
+    # Prepare LS input: use all non-ESPRESSO RVs together
+    time_all = rv_df["Time [BJD]"].values
+    rv_all = rv_df["RV [m/s]"].values
+
+    # Use errors if available, otherwise unit weights
+    if "RV Err. [m/s]" in rv_df.columns:
+        err_all = rv_df["RV Err. [m/s]"].values
+    else:
+        err_all = np.ones_like(rv_all)
+
+    # Remove NaNs
+    mask = ~(np.isnan(time_all) | np.isnan(rv_all) | np.isnan(err_all))
+    t = time_all[mask]
+    y = rv_all[mask]
+    dy = err_all[mask]
+
+    if len(t) < 5:
+        ax_ls.text(
+            0.5,
+            0.5,
+            f"Insufficient data for periodogram\n(N={len(t)} points)",
+            ha="center",
+            va="center",
+            transform=ax_ls.transAxes,
+        )
+        print(f"  Not enough points for LS periodogram (N={len(t)})")
+    else:
+        # Fix non-positive errors
+        bad = dy <= 0
+        if bad.any():
+            repl = np.median(dy[~bad]) if (~bad).any() else 1.0
+            dy[bad] = repl
+
+        span = t.max() - t.min()
+        print(f"  Time span for LS: {span:.1f} days")
+
+        if span <= 1.0:
+            ax_ls.text(
+                0.5,
+                0.5,
+                f"Insufficient time span for periodogram\n(span={span:.1f} days)",
+                ha="center",
+                va="center",
+                transform=ax_ls.transAxes,
+            )
+        else:
+            # Define frequency/period range
+            min_period = 1.1
+            max_period = max(2.0, 0.8 * span)
+            f_min = 1.0 / max_period
+            f_max = 1.0 / min_period
+
+            N = 20000
+            freq = np.linspace(f_min, f_max, N)
+
+            # LS computation
+            ls = LombScargle(t, y, dy)
+            power = ls.power(freq)
+
+            # FAP levels
+            fap_levels = [0.001, 0.01, 0.1]  # 0.1%, 1%, 10%
+            fap_colors = ["red", "orange", "green"]
+            fap_labels = ["0.1%", "1%", "10%"]
+            fap_powers = []
+
+            try:
+                for fap in fap_levels:
+                    fap_powers.append(ls.false_alarm_level(fap, method="baluev"))
+                print(
+                    "  FAP levels (power): "
+                    + ", ".join(f"{lab}={p:.3f}" for lab, p in zip(fap_labels, fap_powers))
+                )
+            except Exception as e:
+                print(f"  Warning: could not compute FAP levels: {e}")
+                fap_powers = []
+
+            # Peak detection
+            power_threshold = np.percentile(power, 85)
+            max_power = np.max(power)
+            if power_threshold > 0.8 * max_power:
+                power_threshold = 0.5 * max_power
+
+            min_period_separation = 0.01
+            if f_max > f_min:
+                min_freq_separation = int(
+                    len(freq) * min_period_separation / np.log10(f_max / f_min)
+                )
+            else:
+                min_freq_separation = 1
+
+            try:
+                peak_indices, peak_props = find_peaks(
+                    power,
+                    height=float(power_threshold),
+                    distance=max(1, min_freq_separation),
+                    prominence=float(power_threshold) * 0.1,
+                )
+                if len(peak_indices) == 0:
+                    lower_threshold = np.percentile(power, 70)
+                    peak_indices, peak_props = find_peaks(
+                        power,
+                        height=float(lower_threshold),
+                        distance=max(1, min_freq_separation),
+                        prominence=float(lower_threshold) * 0.05,
+                    )
+            except Exception as e:
+                print(f"  Peak detection error: {e}")
+                peak_indices = np.array([np.argmax(power)]) if len(power) > 0 else np.array([])
+
+            # Process peaks
+            if len(peak_indices) > 0:
+                peak_periods = 1.0 / freq[peak_indices]
+                peak_powers_raw = power[peak_indices]
+                order = np.argsort(peak_powers_raw)[::-1]
+                peak_periods = peak_periods[order][:3]
+                peak_powers_sorted = peak_powers_raw[order][:3]
+
+                peak_faps = []
+                peak_significance = []
+                for pwr in peak_powers_sorted:
+                    try:
+                        pfap = ls.false_alarm_probability(pwr, method="baluev")
+                        peak_faps.append(pfap)
+                        if len(fap_powers) >= 3:
+                            if pwr >= fap_powers[0]:
+                                sig = "highly significant"
+                            elif pwr >= fap_powers[1]:
+                                sig = "significant"
+                            elif pwr >= fap_powers[2]:
+                                sig = "marginal"
+                            else:
+                                sig = "not significant"
+                        else:
+                            sig = "unknown"
+                        peak_significance.append(sig)
+                    except Exception:
+                        peak_faps.append(np.nan)
+                        peak_significance.append("unknown")
+
+                print("  Detected peaks (combined non-ESPRESSO RV):")
+                ord_names = ["1st", "2nd", "3rd"]
+                for j, (P, Pow, FAP, sig) in enumerate(
+                    zip(peak_periods, peak_powers_sorted, peak_faps, peak_significance)
+                ):
+                    if not np.isnan(FAP):
+                        print(
+                            f"    {ord_names[j]} peak: {P:.2f} d, Power={Pow:.4f}, FAP={FAP:.2e} ({sig})"
+                        )
+                    else:
+                        print(f"    {ord_names[j]} peak: {P:.2f} d, Power={Pow:.4f}")
+            else:
+                peak_periods = []
+                peak_powers_sorted = []
+                peak_faps = []
+                peak_significance = []
+                print("  No significant peaks found in combined non-ESPRESSO RVs.")
+
+            # Convert to periods and plot
+            periods = 1.0 / freq
+            ax_ls.semilogx(periods, power, "k-", linewidth=1)
+
+            # FAP lines
+            for fap_power, col, lab in zip(fap_powers, fap_colors, fap_labels):
+                ax_ls.axhline(
+                    fap_power,
+                    color=col,
+                    linestyle="--",
+                    alpha=0.7,
+                    linewidth=1.5,
+                    label=f"{lab} FAP",
+                )
+
+            # Mark peaks
+            peak_colors = ["purple", "blue", "cyan"]
+            peak_styles = ["-", "--", ":"]
+            for j, (P, Pow, FAP, sig) in enumerate(
+                zip(peak_periods, peak_powers_sorted, peak_faps, peak_significance)
+            ):
+                if j >= len(peak_colors):
+                    break
+                if not np.isnan(FAP):
+                    label = f"{['1st','2nd','3rd'][j]} peak: {P:.1f}d (FAP={FAP:.1e})"
+                else:
+                    label = f"{['1st','2nd','3rd'][j]} peak: {P:.1f}d"
+                ax_ls.axvline(
+                    P,
+                    color=peak_colors[j],
+                    linestyle=peak_styles[j],
+                    linewidth=2,
+                    alpha=0.8,
+                    label=label,
+                )
+
+            # Reference periods
+            reference_periods = [1, 7, 14, 28, 100, 365]
+            for refP in reference_periods:
+                if min_period <= refP <= max_period:
+                    ax_ls.axvline(refP, color="blue", linestyle=":", alpha=0.25, linewidth=1)
+                    ax_ls.text(
+                        refP,
+                        ax_ls.get_ylim()[1] * 0.85,
+                        f"{refP}d",
+                        rotation=90,
+                        ha="right",
+                        va="top",
+                        fontsize=8,
+                        alpha=0.6,
+                        color="blue",
+                    )
+
+            ax_ls.set_xlabel("Period [days]")
+            ax_ls.set_ylabel("LS Power")
+            ax_ls.set_title("HD102365 - Combined RV Lomb–Scargle (Non-ESPRESSO)")
+            ax_ls.grid(True, alpha=0.3)
+            ax_ls.legend(fontsize=7, loc="upper right")
+
+            # Stats box
+            if len(peak_periods) > 0:
+                lines = []
+                for j, (P, Pow, FAP) in enumerate(
+                    zip(peak_periods, peak_powers_sorted, peak_faps)
+                ):
+                    if not np.isnan(FAP):
+                        lines.append(f"Peak {j+1}: {P:.1f} d (FAP={FAP:.1e})")
+                    else:
+                        lines.append(f"Peak {j+1}: {P:.1f} d (P={Pow:.3f})")
+                peak_text = "\n".join(lines)
+            else:
+                peak_text = "No significant peaks"
+
+            stats_text = f"N={len(t)} points\nSpan={span:.1f} d\n" + peak_text
+            ax_ls.text(
+                0.02,
+                0.75,
+                stats_text,
+                transform=ax_ls.transAxes,
+                fontsize=8,
+                va="top",
+                bbox=dict(
+                    boxstyle="round,pad=0.4",
+                    facecolor="white",
+                    alpha=0.9,
+                    edgecolor="gray",
+                    linewidth=0.5,
+                ),
+            )
+
+    plt.tight_layout(rect=[0, 0, 1, 0.96])
+    fig.suptitle("HD102365 - Combined RVs (All Non-ESPRESSO Instruments)", fontsize=16)
+
+    outpath = os.path.join(fig_dir, "HD102365_all_non_ESPRESSO_RV_combined_LS.png")
+    plt.savefig(outpath, dpi=150, bbox_inches="tight")
+    plt.close(fig)
+    print(f"  Saved combined non-ESPRESSO RV figure: {outpath}")
+
+
 def main():
     """Main function"""
     
@@ -409,6 +742,8 @@ def main():
         print(f"\n{instrument}:")
         plot_activity_with_periodograms(instrument, inst_df, fig_dir)
     
+    plot_combined_rv_with_periodogram(df_all, fig_dir)
+
     print("\nDone!")
 
 if __name__ == "__main__":

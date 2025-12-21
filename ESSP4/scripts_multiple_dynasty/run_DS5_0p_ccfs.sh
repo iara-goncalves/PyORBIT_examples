@@ -38,9 +38,9 @@ pyorbit_run dynesty DS5_0p_ccfs.yaml > configuration_file_emcee_run_DS5_0p_ccfs.
 pyorbit_results dynesty DS5_0p_ccfs.yaml -all >> configuration_file_emcee_run_DS5_0p_ccfs.log
 
 # Create results directory and copy files
-mkdir -p ./DS5_0p_ccfs
-cp DS5_0p_ccfs.yaml ./DS5_0p_ccfs/
-cp configuration_file_emcee_run_DS5_0p_ccfs.log ./DS5_0p_ccfs/
+# mkdir -p ./DS5_0p_ccfs
+# cp DS5_0p_ccfs.yaml ./DS5_0p_ccfs/
+# cp configuration_file_emcee_run_DS5_0p_ccfs.log ./DS5_0p_ccfs/
 
 # Deactivate environment
 conda deactivate

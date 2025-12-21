@@ -38,9 +38,9 @@ pyorbit_run dynesty DS6_3p_5_activity_indi.yaml > configuration_file_emcee_run_D
 pyorbit_results dynesty DS6_3p_5_activity_indi.yaml -all >> configuration_file_emcee_run_DS6_3p_5_activity_indi.log
 
 # Create results directory and copy files
-mkdir -p ./DS6_3p_5_activity_indi
-cp DS6_3p_5_activity_indi.yaml ./DS6_3p_5_activity_indi/
-cp configuration_file_emcee_run_DS6_3p_5_activity_indi.log ./DS6_3p_5_activity_indi/
+# mkdir -p ./DS6_3p_5_activity_indi
+# cp DS6_3p_5_activity_indi.yaml ./DS6_3p_5_activity_indi/
+# cp configuration_file_emcee_run_DS6_3p_5_activity_indi.log ./DS6_3p_5_activity_indi/
 
 # Deactivate environment
 conda deactivate

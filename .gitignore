@@ -62,16 +62,26 @@ pyorbit_package.egg-info/
 *.log
 *.sh
 *.yaml
+*.csv
+*.pdf
+*.tex
+*.aux
+*.out
 
 
-# Ignore everything in HD102365 except scripts
+# Ignore everything in HD102365 except scripts folders
 HD102365/*
 !ESPRESSO_CCF/
 !ESPRESSO_CCF/**
-!fugures/
+!figures/
 !figures/**
+!post_analysis
+!post_analysis/**
+!scripts_HD102365/
+!scripts_HD102365/**
 !processed_data/
 !processed_data/**
+
 !submission1/
 !submission1/**
 !submission2/
