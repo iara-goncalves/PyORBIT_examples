@@ -82,13 +82,6 @@ HD102365/*
 !processed_data/
 !processed_data/**
 
-!submission1/
-!submission1/**
-!submission2/
-!submission2/**
-!submission3/
-!submission3/**
-
 # Ignore everything in ESSP4 except scripts folders
 ESSP4/*
 !post_analysis/
@@ -119,3 +112,6 @@ quickstart/
 ttv_measurement/
 
 *.out
+# ignore submission results
+*/dynesty/
+*.save
