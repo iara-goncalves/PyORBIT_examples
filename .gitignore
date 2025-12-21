@@ -115,3 +115,5 @@ ttv_measurement/
 # ignore submission results
 */dynesty/
 *.save
+
+HD102365/submission2/dynesty/dynesty.save
